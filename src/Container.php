@@ -26,7 +26,7 @@ class Container implements ContainerInterface
             $this->instances[$name] = $this->factories[$name]();
         }
         $instance = $this->instances[$name];
-        if (!$instance instanceof $interface) {
+        if ($interface && !($instance instanceof $interface)) {
             throw new InvalidServiceException(sprintf('Instance of service %s (%s) does not implement %s', $name, get_class($instance), $interface));
         }
         return $instance;
