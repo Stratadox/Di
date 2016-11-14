@@ -19,6 +19,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testSetAndGetService()
     {
         $di = new Container();
+
         $di->set('foo', function() {
             return new Foo();
         });
@@ -118,6 +119,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             'bar' => function() { return new Bar(); },
             'baz' => function() { return new Baz(); },
         ];
+
         $di->configure($services);
 
         $this->assertTrue($di->has('foo'));
@@ -137,6 +139,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             'bar' => function() { return new Bar(); },
             'qux' => function() { return new Qux(new Container()); },
         ];
+
         $di->configure($services);
 
         $this->assertTrue($di->has('foo'));
@@ -166,6 +169,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             'barbaz' => function() { return new Bar(); },
             'qux' => function() use ($di) { return new Qux($di); },
         ];
+
         $di->configure($services);
 
         $this->assertTrue($di->has('barbaz'));
@@ -187,6 +191,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             'barbaz' => function() { return new Bar(); },
             'qux' => function() use ($di) { return new Qux($di); },
         ];
+        
         $di->configure($services);
 
         $this->assertTrue($di->has('barbaz'));
@@ -203,6 +208,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('something-equally-useful', $qux->doSomethingUseful());
     }
 
+    /**
+     * Asserts that the service is not loaded before calling $di->get
+     */
     public function testServiceIsLazyLoaded()
     {
         $di = new Container();
@@ -216,5 +224,23 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->expectException(\Exception::class);
 
         $di->get('throw');
+    }
+
+    /**
+     * Asserts that the interface argument is optional
+     */
+    public function testInterfaceIsOptional()
+    {
+        $di = new Container();
+
+        $di->set('foo', function() {
+            return new Foo();
+        });
+
+        $this->assertTrue($di->has('foo'));
+
+        $foo = $di->get('foo');
+
+        $this->assertEquals('something', $foo->doSomething());
     }
 }
