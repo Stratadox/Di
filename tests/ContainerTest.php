@@ -3,244 +3,237 @@
 namespace Stratadox\Di\Test;
 
 use Stratadox\Di\Container;
+use Stratadox\Di\Exception\InvalidServiceConfigurationException;
 use Stratadox\Di\Exception\InvalidServiceException;
 use Stratadox\Di\Exception\UndefinedServiceException;
 use Stratadox\Di\Test\Asset\Bar;
 use Stratadox\Di\Test\Asset\BarInterface;
 use Stratadox\Di\Test\Asset\Baz;
 use Stratadox\Di\Test\Asset\Foo;
-use Stratadox\Di\Test\Asset\Qux;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Asserts that the Foo service is configured and loaded correctly
+     * @test
      */
-    public function testSetAndGetService()
+    public function shouldIndicateWhenServiceIdIsSet()
     {
         $di = new Container();
-
-        $di->set('foo', function() {
+        $di->set('foo', function () {
             return new Foo();
         });
 
         $this->assertTrue($di->has('foo'));
-
-        $foo = $di->get('foo', Foo::class);
-
-        $this->assertEquals('something', $foo->doSomething());
     }
 
     /**
-     * Asserts that an UndefinedServiceException is thrown when the service does not implement the required service
+     * @test
      */
-    public function testGetUndefinedServiceThrowsException()
+    public function shouldIndicateUnsetServiceIds()
+    {
+        $di = new Container();
+        $this->assertFalse($di->has('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnExistingService()
+    {
+        $di = new Container();
+        $di->set('foo', function () {
+            return new Foo();
+        });
+
+        $bar = $di->get('foo');
+
+        $this->assertInstanceOf(Foo::class, $bar);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnCorrectService()
+    {
+        $di = new Container();
+        $di->set('foo', function () {
+            return new Foo();
+        });
+        $di->set('bar', function () {
+            return new Bar();
+        });
+
+        $this->assertInstanceOf(Foo::class, $di->get('foo'));
+        $this->assertInstanceOf(Bar::class, $di->get('bar'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldAllowServiceOverride()
+    {
+        $di = new Container();
+        $di->set('foo', function () {
+            return new Bar();
+        });
+        $di->set('foo', function () {
+            return new Foo();
+        });
+
+        $this->assertInstanceOf(Foo::class, $di->get('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldAllowServiceComposition()
+    {
+        $di = new Container();
+        $di->set('baz', function () use ($di) {
+            return new Baz($di->get('foo'));
+        });
+        $di->set('foo', function () {
+            return new Foo();
+        });
+
+        $this->assertInstanceOf(Foo::class, $di->get('baz')->getFoo());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCacheCompositeServices()
+    {
+        $di = new Container();
+        $di->set('baz', function () use ($di) {
+            return new Baz($di->get('foo'));
+        });
+        $di->set('foo', function () {
+            return new Foo();
+        });
+
+        $baz1 = $di->get('baz');
+
+        // Override collaborator 'foo' with new service
+        $di->set('foo', function () {
+            return new Bar();
+        });
+
+        // The override should not have any effect on the 'baz' service
+        $baz2 = $di->get('baz');
+
+        $this->assertSame($baz1, $baz2);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldIndicateIncorrectServiceConfigurations()
+    {
+        $di = new Container();
+        $di->set('baz', function () use ($di) {
+            return new Baz($di->get('foo'));
+        });
+        $di->set('foo', function () {
+            return new Bar();
+        });
+
+        // Invalid because service 'foo' has a Bar, not a Foo
+        $this->expectException(InvalidServiceConfigurationException::class);
+        $di->get('baz');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotReturnNonExistingService()
     {
         $di = new Container();
 
-        $this->assertFalse($di->has('foo'));
-
         $this->expectException(UndefinedServiceException::class);
-
         $di->get('foo');
     }
 
     /**
-     * Asserts that the Bar service is configured, loaded and interface-compliant
+     * @test
      */
-    public function testSetGetAndValidateService()
+    public function shouldReturnCachedInstances()
     {
         $di = new Container();
-
-        $di->set('bar', function() {
+        $di->set('bar', function () {
             return new Bar();
         });
 
-        $this->assertTrue($di->has('bar'));
+        $bar1 = $di->get('bar');
+        $bar2 = $di->get('bar');
+
+        $this->assertSame($bar1, $bar2);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnServiceOnCorrectInterface()
+    {
+        $di = new Container();
+        $di->set('bar', function () {
+            return new Bar();
+        });
 
         $bar = $di->get('bar', BarInterface::class);
 
-        $this->assertEquals('something-useful', $bar->doSomethingUseful());
+        $this->assertInstanceOf(BarInterface::class, $bar);
     }
 
     /**
-     * Asserts that an InvalidServiceException is thrown when the service does not implement the required interface
+     * @test
      */
-    public function testSetAndGetInvalidServiceThrowsException()
+    public function shouldNotReturnServiceOnInterfaceMismatch()
     {
         $di = new Container();
-
-        $di->set('foo', function() {
-            return new Foo();
-        });
-
-        $this->assertTrue($di->has('foo'));
-
-        $this->expectException(InvalidServiceException::class);
-
-        $di->get('foo', BarInterface::class);
-    }
-
-    /**
-     * Asserts that the Bar service is replaced by the Baz service at runtime
-     */
-    public function testOverwriteService()
-    {
-        $di = new Container();
-
-        $di->set('barbaz', function() {
+        $di->set('bar', function () {
             return new Bar();
         });
 
-        $this->assertTrue($di->has('barbaz'));
-
-        $bar = $di->get('barbaz', BarInterface::class);
-
-        $this->assertEquals('something-useful', $bar->doSomethingUseful());
-
-        $di->set('barbaz', function() {
-            return new Baz();
-        });
-
-        $bar = $di->get('barbaz', BarInterface::class);
-
-        $this->assertEquals('something-equally-useful', $bar->doSomethingUseful());
+        $this->expectException(InvalidServiceException::class);
+        $di->get('bar', Foo::class);
     }
 
     /**
-     * Asserts that services can be loaded in though an array of service configurations
+     * @test
      */
-    public function testSetServicesAsArray()
+    public function shouldRegisterMultipleServicesAtOnce()
     {
         $di = new Container();
+        $di->configure([
+            'bar' => function () {
+                return new Bar();
+            },
+            'foo' => function () {
+                return new Foo();
+            },
+        ]);
 
-        $services = [
-            'foo' => function() { return new Foo(); },
-            'bar' => function() { return new Bar(); },
-            'baz' => function() { return new Baz(); },
-        ];
-
-        $di->configure($services);
-
-        $this->assertTrue($di->has('foo'));
         $this->assertTrue($di->has('bar'));
-        $this->assertTrue($di->has('baz'));
-    }
-
-    /**
-     * Asserts that services can be loaded in though an array of service configurations
-     */
-    public function testPartiallyOverwriteServicesThroughArray()
-    {
-        $di = new Container();
-
-        $services = [
-            'foo' => function() { return new Foo(); },
-            'bar' => function() { return new Bar(); },
-            'qux' => function() { return new Qux(new Container()); },
-        ];
-
-        $di->configure($services);
-
         $this->assertTrue($di->has('foo'));
-        $this->assertTrue($di->has('bar'));
-        $this->assertTrue($di->has('qux'));
-
-        $services = [
-            'baz' => function() { return new Baz(); },
-            'qux' => function() use ($di) { return new Qux($di); },
-        ];
-        $di->configure($services);
-
-        $this->assertTrue($di->has('foo'));
-        $this->assertTrue($di->has('bar'));
-        $this->assertTrue($di->has('baz'));
-        $this->assertTrue($di->has('qux'));
     }
 
     /**
-     * Asserts that the container can be passed as constructor argument to a service
+     * @test
      */
-    public function testInjectContainerIntoService()
+    public function shouldReturnMassSetServices()
     {
         $di = new Container();
+        $di->configure([
+            'bar' => function () {
+                return new Bar();
+            },
+            'foo' => function () {
+                return new Foo();
+            },
+        ]);
 
-        $services = [
-            'barbaz' => function() { return new Bar(); },
-            'qux' => function() use ($di) { return new Qux($di); },
-        ];
-
-        $di->configure($services);
-
-        $this->assertTrue($di->has('barbaz'));
-        $this->assertTrue($di->has('qux'));
-
-        $qux = $di->get('qux', Qux::class);
-
-        $this->assertEquals('something-useful', $qux->doSomethingUseful());
-    }
-
-    /**
-     * Asserts that a service changes behaviour if a dependency gets modified
-     */
-    public function testInjectedContainerCanChangeService()
-    {
-        $di = new Container();
-
-        $services = [
-            'barbaz' => function() { return new Bar(); },
-            'qux' => function() use ($di) { return new Qux($di); },
-        ];
-        
-        $di->configure($services);
-
-        $this->assertTrue($di->has('barbaz'));
-        $this->assertTrue($di->has('qux'));
-
-        $qux = $di->get('qux', Qux::class);
-
-        $this->assertEquals('something-useful', $qux->doSomethingUseful());
-
-        $di->set('barbaz', function() {
-            return new Baz();
-        });
-
-        $this->assertEquals('something-equally-useful', $qux->doSomethingUseful());
-    }
-
-    /**
-     * Asserts that the service is not loaded before calling $di->get
-     */
-    public function testServiceIsLazyLoaded()
-    {
-        $di = new Container();
-
-        $di->set('throw', function () {
-            throw new \Exception();
-        });
-
-        $this->assertTrue($di->has('throw'));
-
-        $this->expectException(\Exception::class);
-
-        $di->get('throw');
-    }
-
-    /**
-     * Asserts that the interface argument is optional
-     */
-    public function testInterfaceIsOptional()
-    {
-        $di = new Container();
-
-        $di->set('foo', function() {
-            return new Foo();
-        });
-
-        $this->assertTrue($di->has('foo'));
-
-        $foo = $di->get('foo');
-
-        $this->assertEquals('something', $foo->doSomething());
+        $this->assertInstanceOf(Bar::class, $di->get('bar'));
+        $this->assertInstanceOf(Foo::class, $di->get('foo'));
     }
 }

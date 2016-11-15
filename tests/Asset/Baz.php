@@ -2,10 +2,23 @@
 
 namespace Stratadox\Di\Test\Asset;
 
-class Baz implements BarInterface
+class Baz
 {
-    public function doSomethingUseful()
+    /**
+     * @var Foo
+     */
+    private $foo;
+
+    public function __construct(Foo $foo)
     {
-        return 'something-equally-useful';
+        $this->foo = $foo;
+    }
+
+    /**
+     * @return Foo
+     */
+    public function getFoo()
+    {
+        return $this->foo;
     }
 }
