@@ -2,6 +2,9 @@
 
 namespace Stratadox\Di;
 
+use Closure;
+use Exception;
+use Stratadox\Di\Exception\InvalidServiceConfigurationException;
 use Stratadox\Di\Exception\InvalidServiceException;
 use Stratadox\Di\Exception\UndefinedServiceException;
 
@@ -23,7 +26,19 @@ class Container implements ContainerInterface
             if (!isset($this->factories[$name])) {
                 throw new UndefinedServiceException('No service registered for '.$name);
             }
-            $this->instances[$name] = $this->factories[$name]();
+            try {
+                $this->instances[$name] = $this->factories[$name]();
+            } catch (Exception $e) {
+                throw new InvalidServiceConfigurationException(
+                    sprintf(
+                        'Service %s was configured incorrectly and could not be created: %s',
+                        $name,
+                        $e->getMessage()
+                    ),
+                    0,
+                    $e
+                );
+            }
         }
         $instance = $this->instances[$name];
         if ($interface && !($instance instanceof $interface)) {
@@ -42,9 +57,9 @@ class Container implements ContainerInterface
 
     /**
      * @param $name
-     * @param callable $loader
+     * @param Closure $loader
      */
-    public function set($name, callable $loader) {
+    public function set($name, Closure $loader) {
         $this->instances[$name] = null;
         $this->factories[$name] = $loader;
     }

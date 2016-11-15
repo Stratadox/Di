@@ -2,6 +2,8 @@
 
 namespace Stratadox\Di\Exception;
 
-class UndefinedServiceException extends \Exception
+use RuntimeException;
+
+class UndefinedServiceException extends RuntimeException
 {
 }

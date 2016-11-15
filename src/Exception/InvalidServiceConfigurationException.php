@@ -4,6 +4,6 @@ namespace Stratadox\Di\Exception;
 
 use RuntimeException;
 
-class InvalidServiceException extends RuntimeException
+class InvalidServiceConfigurationException extends RuntimeException
 {
 }
