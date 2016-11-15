@@ -1,4 +1,5 @@
-language: php
+language:
+  php
 php:
   - '5.4'
   - '5.5'
@@ -7,4 +8,9 @@ php:
   - hhvm
   - nightly
 
-script: vendor/bin/phpunit tests/
+before_script:
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install
+
+script:
+  vendor/bin/phpunit tests/
