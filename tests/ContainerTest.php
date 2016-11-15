@@ -132,7 +132,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
-            return new Baz($di->get('foo'), Foo::class);
+            return new Baz($di->get('foo', Foo::class));
         });
         $di->set('foo', function () {
             return new Bar();
