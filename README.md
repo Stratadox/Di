@@ -24,7 +24,7 @@ $hasService = $di->has('some_service');
 ## Dependent services
 
 You can construct services that use other services by passing the DI container in your anonymous function.
-```
+```php
 $di = new Container();
 
 $di->set('collaborator', function () {
@@ -45,7 +45,7 @@ So in the example above we could define `main_service` before `collaborator`, so
 
 To pass other parameters to your services, pass them to your anonymous function as well.
 
-```
+```php
 $dsn = 'mysql:host=localhost;dbname=testdb';
 $username = 'admin';
 $password = 'secret';
@@ -54,4 +54,11 @@ $di = new Container();
 $di->set('database', function () use ($dsn, $username, $password) {
     return new DatabaseConnection($dsn, $username, $password);
 });
+```
+
+## Typehinting
+
+You can assert the service to be of a certain class or implement an interface when requesting the service.
+```php
+$foo = $di->get('foo', Foo::class);
 ```
