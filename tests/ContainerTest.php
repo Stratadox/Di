@@ -205,7 +205,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function shouldRegisterMultipleServicesAtOnce()
     {
         $di = new Container();
-        $di->configure([
+        $di->setMany([
             'bar' => function () {
                 return new Bar();
             },
@@ -224,7 +224,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function shouldReturnMassSetServices()
     {
         $di = new Container();
-        $di->configure([
+        $di->setMany([
             'bar' => function () {
                 return new Bar();
             },

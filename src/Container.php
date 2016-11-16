@@ -67,7 +67,7 @@ class Container implements ContainerInterface
     /**
      * @param array $configuration as [name => callable]
      */
-    public function configure(array $configuration) {
+    public function setMany(array $configuration) {
         foreach ($configuration as $name => $loader) {
             $this->set($name, $loader);
         }
