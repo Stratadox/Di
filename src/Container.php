@@ -12,6 +12,7 @@ class Container implements ContainerInterface
 {
     /** @var object[] */
     protected $instances = [];
+
     /** @var callable[] */
     protected $factories = [];
 
@@ -19,12 +20,16 @@ class Container implements ContainerInterface
      * @param string $name
      * @param string $interface
      * @return object
-     * @throws \Exception
+     * @throws InvalidServiceException
+     * @throws InvalidServiceConfigurationException
+     * @throws UndefinedServiceException
      */
-    public function get($name, $interface = '') {
+    public function get($name, $type = '') {
         if (!isset($this->instances[$name])) {
             if (!isset($this->factories[$name])) {
-                throw new UndefinedServiceException('No service registered for '.$name);
+                throw new UndefinedServiceException(
+                    sprintf('No service registered for %s', $name)
+                );
             }
             try {
                 $this->instances[$name] = $this->factories[$name]();
@@ -41,10 +46,17 @@ class Container implements ContainerInterface
             }
         }
         $instance = $this->instances[$name];
-        if ($interface && !($instance instanceof $interface)) {
-            throw new InvalidServiceException(sprintf('Instance of service %s (%s) does not implement %s', $name, get_class($instance), $interface));
+        if (($type !== '') && !($instance instanceof $type)) {
+            throw new InvalidServiceException(
+                sprintf(
+                    'Instance of service %s (%s) is not an instance of %s',
+                    $name,
+                    get_class($instance),
+                    $type
+                )
+            );
         }
-        return $instance;
+        return $type;
     }
 
     /**
@@ -56,7 +68,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param Closure $loader
      */
     public function set($name, Closure $loader) {
@@ -65,7 +77,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param array $configuration as [name => Closure]
+     * @param array $configuration as [string => Closure]
      */
     public function setMany(array $configuration) {
         foreach ($configuration as $name => $loader) {
