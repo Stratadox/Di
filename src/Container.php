@@ -18,7 +18,7 @@ class Container implements ContainerInterface
     /**
      * @param string $name
      * @param string $interface
-     * @return mixed
+     * @return object
      * @throws \Exception
      */
     public function get($name, $interface = '') {
@@ -65,7 +65,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param array $configuration as [name => callable]
+     * @param array $configuration as [name => Closure]
      */
     public function setMany(array $configuration) {
         foreach ($configuration as $name => $loader) {
