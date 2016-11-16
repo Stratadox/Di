@@ -3,7 +3,7 @@
 namespace Stratadox\Di\Test;
 
 use Stratadox\Di\Container;
-use Stratadox\Di\Exception\InvalidServiceConfigurationException;
+use Stratadox\Di\Exception\InvalidFactoryException;
 use Stratadox\Di\Exception\InvalidServiceException;
 use Stratadox\Di\Exception\UndefinedServiceException;
 use Stratadox\Di\Test\Stub\Bar;
@@ -128,7 +128,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldIndicateIncorrectServiceConfigurations()
+    public function shouldIndicateInvalidFactories()
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
@@ -139,7 +139,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         });
 
         // Invalid because service 'foo' has a Bar, not a Foo
-        $this->expectException(InvalidServiceConfigurationException::class);
+        $this->expectException(InvalidFactoryException::class);
         $di->get('baz');
     }
 

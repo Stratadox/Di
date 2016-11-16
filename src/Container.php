@@ -4,7 +4,7 @@ namespace Stratadox\Di;
 
 use Closure;
 use Exception;
-use Stratadox\Di\Exception\InvalidServiceConfigurationException;
+use Stratadox\Di\Exception\InvalidFactoryException;
 use Stratadox\Di\Exception\InvalidServiceException;
 use Stratadox\Di\Exception\UndefinedServiceException;
 
@@ -13,15 +13,15 @@ class Container implements ContainerInterface
     /** @var object[] */
     protected $instances = [];
 
-    /** @var callable[] */
+    /** @var Closure[] */
     protected $factories = [];
 
     /**
      * @param string $name
      * @param string $type
      * @return object
+     * @throws InvalidFactoryException
      * @throws InvalidServiceException
-     * @throws InvalidServiceConfigurationException
      * @throws UndefinedServiceException
      */
     public function get($name, $type = '') {
@@ -34,7 +34,7 @@ class Container implements ContainerInterface
             try {
                 $this->instances[$name] = $this->factories[$name]();
             } catch (Exception $e) {
-                throw new InvalidServiceConfigurationException(
+                throw new InvalidFactoryException(
                     sprintf(
                         'Service %s was configured incorrectly and could not be created: %s',
                         $name,
@@ -78,19 +78,19 @@ class Container implements ContainerInterface
 
     /**
      * @param string $name
-     * @param Closure $loader
+     * @param Closure $factory
      */
-    public function set($name, Closure $loader) {
+    public function set($name, Closure $factory) {
         $this->instances[$name] = null;
-        $this->factories[$name] = $loader;
+        $this->factories[$name] = $factory;
     }
 
     /**
      * @param array $services
      */
     public function setMany(array $services) {
-        foreach ($services as $name => $loader) {
-            $this->set($name, $loader);
+        foreach ($services as $name => $factory) {
+            $this->set($name, $factory);
         }
     }
 }
