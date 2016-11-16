@@ -1,4 +1,4 @@
-# Di
+# Di [![Build Status](https://travis-ci.org/Stratadox/Di.svg?branch=master)](https://travis-ci.org/Stratadox/Di)
 A most simplistic Dependency Injection Container
 
 Services are lazy loaded through the use of anonymous functions.
@@ -13,6 +13,16 @@ $di = new Container();
 $di->set('some_service', function () {
     return new SomeService();
 });
+
+// Set multiple services at once
+$di->setMany([
+    'some_service' => function () {
+        return new SomeService();
+    },
+    'other_service' => function () {
+        return new OtherService();
+    },
+]);
 
 // Get service
 $service = $di->get('some_service');
