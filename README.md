@@ -1,4 +1,4 @@
-# Di
+# Di [![Build Status](https://travis-ci.org/Stratadox/Di.svg?branch=master)](https://travis-ci.org/Stratadox/Di)
 A most simplistic Dependency Injection Container
 
 Services are lazy loaded through the use of anonymous functions.
@@ -14,6 +14,16 @@ $di->set('some_service', function () {
     return new SomeService();
 });
 
+// Set multiple services at once
+$di->setMany([
+    'some_service' => function () {
+        return new SomeService();
+    },
+    'other_service' => function () {
+        return new OtherService();
+    },
+]);
+
 // Get service
 $service = $di->get('some_service');
 
@@ -24,7 +34,8 @@ $hasService = $di->has('some_service');
 ## Dependent services
 
 You can construct services that use other services by passing the DI container in your anonymous function.
-```
+
+```php
 $di = new Container();
 
 $di->set('collaborator', function () {
@@ -45,7 +56,7 @@ So in the example above we could define `main_service` before `collaborator`, so
 
 To pass other parameters to your services, pass them to your anonymous function as well.
 
-```
+```php
 $dsn = 'mysql:host=localhost;dbname=testdb';
 $username = 'admin';
 $password = 'secret';
