@@ -1,7 +1,7 @@
 # Di
 A most simplistic Dependency Injection Container
 
-Services are lazy loaded by default through the use of anonymous functions.
+Services are lazy loaded through the use of anonymous functions.
 
 ## Basic usage
 
@@ -9,15 +9,15 @@ Services are lazy loaded by default through the use of anonymous functions.
 // Create container
 $di = new Container();
 
-// set service
+// Set service
 $di->set('some_service', function () {
-   return new SomeService();
+    return new SomeService();
 });
 
-// get service
+// Get service
 $service = $di->get('some_service');
 
-// check if service exists
+// Check if service exists
 $hasService = $di->has('some_service');
 ```
 
@@ -32,7 +32,7 @@ $di->set('collaborator', function () {
 });
 
 $di->set('main_service', function () use ($di) {
-     return new MainService($di->get('collaborator');
+    return new MainService($di->get('collaborator');
 });
 
 $service = $di->get('main_service');
@@ -47,8 +47,8 @@ To pass other parameters to your services, pass them to your anonymous function 
 
 ```
 $dsn = 'mysql:host=localhost;dbname=testdb';
-$username = 'foo';
-$password = 's3cr3t';
+$username = 'admin';
+$password = 'secret';
 
 $di = new Container();
 $di->set('database', function () use ($dsn, $username, $password) {
