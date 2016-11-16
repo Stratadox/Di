@@ -24,6 +24,7 @@ $hasService = $di->has('some_service');
 ## Dependent services
 
 You can construct services that use other services by passing the DI container in your anonymous function.
+
 ```php
 $di = new Container();
 
