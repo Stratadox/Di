@@ -18,7 +18,7 @@ class Container implements ContainerInterface
 
     /**
      * @param string $name
-     * @param string $interface
+     * @param string $type
      * @return object
      * @throws InvalidServiceException
      * @throws InvalidServiceConfigurationException
@@ -87,10 +87,10 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param array $configuration as [string => Closure]
+     * @param array $services
      */
-    public function setMany(array $configuration) {
-        foreach ($configuration as $name => $loader) {
+    public function setMany(array $services) {
+        foreach ($services as $name => $loader) {
             $this->set($name, $loader);
         }
     }
