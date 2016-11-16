@@ -46,6 +46,16 @@ class Container implements ContainerInterface
             }
         }
         $instance = $this->instances[$name];
+        
+        if (!is_object($instance)) {
+            throw new InvalidServiceException(
+                sprintf(
+                    'Result of service %s (%s) is not an object',
+                    $name,
+                    gettype($instance)
+                )
+            );
+        }
         if (($type !== '') && !($instance instanceof $type)) {
             throw new InvalidServiceException(
                 sprintf(
@@ -56,7 +66,7 @@ class Container implements ContainerInterface
                 )
             );
         }
-        return $type;
+        return $instance;
     }
 
     /**
