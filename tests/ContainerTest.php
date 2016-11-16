@@ -6,10 +6,10 @@ use Stratadox\Di\Container;
 use Stratadox\Di\Exception\InvalidServiceConfigurationException;
 use Stratadox\Di\Exception\InvalidServiceException;
 use Stratadox\Di\Exception\UndefinedServiceException;
-use Stratadox\Di\Test\Asset\Bar;
-use Stratadox\Di\Test\Asset\BarInterface;
-use Stratadox\Di\Test\Asset\Baz;
-use Stratadox\Di\Test\Asset\Foo;
+use Stratadox\Di\Test\Stub\Bar;
+use Stratadox\Di\Test\Stub\BarInterface;
+use Stratadox\Di\Test\Stub\Baz;
+use Stratadox\Di\Test\Stub\Foo;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {

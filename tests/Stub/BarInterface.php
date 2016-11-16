@@ -1,6 +1,6 @@
 <?php
 
-namespace Stratadox\Di\Test\Asset;
+namespace Stratadox\Di\Test\Stub;
 
 interface BarInterface
 {
