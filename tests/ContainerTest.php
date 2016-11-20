@@ -198,4 +198,31 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->expectException(InvalidServiceException::class);
         $di->get('bar', Foo::class);
     }
+
+    /**
+     * @test
+     */
+    public function shouldReturnScalarOnCorrectType()
+    {
+        $di = new Container();
+        $di->set('string', function () {
+            return 'Hello world!';
+        });
+
+        $this->assertEquals('Hello world!', $di->get('string', 'string'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotReturnScalarOnTypeMismatch()
+    {
+        $di = new Container();
+        $di->set('string', function () {
+            return 'Hello world!';
+        });
+
+        $this->expectException(InvalidServiceException::class);
+        $di->get('string', 'double');
+    }
 }

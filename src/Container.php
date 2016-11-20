@@ -10,62 +10,45 @@ use Stratadox\Di\Exception\UndefinedServiceException;
 
 class Container implements ContainerInterface
 {
-    /** @var object[] */
-    protected $instances = [];
+    /** @var mixed[] */
+    protected $services = [];
 
     /** @var Closure[] */
     protected $factories = [];
 
     /**
      * @param string $name
-     * @param string $type
-     * @return object
+     * @param string $type = ''
+     * @return mixed
      * @throws InvalidFactoryException
      * @throws InvalidServiceException
      * @throws UndefinedServiceException
      */
     public function get($name, $type = '') {
-        if (!isset($this->instances[$name])) {
+        if (!isset($this->services[$name])) {
             if (!isset($this->factories[$name])) {
-                throw new UndefinedServiceException(
-                    sprintf('No service registered for %s', $name)
-                );
+                throw new UndefinedServiceException(sprintf('No service registered for %s', $name));
             }
             try {
-                $this->instances[$name] = $this->factories[$name]();
+                $this->services[$name] = $this->factories[$name]();
             } catch (Exception $e) {
-                throw new InvalidFactoryException(
-                    sprintf(
-                        'Service %s was configured incorrectly and could not be created: %s',
-                        $name,
-                        $e->getMessage()
-                    ),
-                    0,
-                    $e
-                );
+                throw new InvalidFactoryException(sprintf(
+					'Service %s was configured incorrectly and could not be created: %s',
+					$name,
+					$e->getMessage()
+				), 0, $e);
             }
         }
-        $instance = $this->instances[$name];
-        if (!is_object($instance)) {
-            throw new InvalidServiceException(
-                sprintf(
-                    'Service %s (%s) is not an object',
-                    $name,
-                    gettype($instance)
-                )
-            );
+        $service = $this->services[$name];
+        if ($type !== '' && gettype($service) !== $type && !($service instanceof $type)) {
+            throw new InvalidServiceException(sprintf(
+				'Service %s (%s) is not of type %s',
+				$name,
+				is_object($service) ? get_class($service) : gettype($service),
+				$type
+			));
         }
-        if (($type !== '') && !($instance instanceof $type)) {
-            throw new InvalidServiceException(
-                sprintf(
-                    'Service %s (%s) is not an instance of %s',
-                    $name,
-                    get_class($instance),
-                    $type
-                )
-            );
-        }
-        return $instance;
+        return $service;
     }
 
     /**
@@ -81,7 +64,7 @@ class Container implements ContainerInterface
      * @param Closure $factory
      */
     public function set($name, Closure $factory) {
-        $this->instances[$name] = null;
+        $this->services[$name] = null;
         $this->factories[$name] = $factory;
     }
 }
