@@ -67,4 +67,11 @@ class Container implements ContainerInterface
         $this->services[$name] = null;
         $this->factories[$name] = $factory;
     }
+
+    /**
+     * @param string $name
+     */
+    public function forget($name) {
+        unset($this->factories[$name], $this->services[$name]);
+    }
 }

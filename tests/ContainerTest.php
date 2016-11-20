@@ -45,9 +45,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             return new Foo();
         });
 
-        $bar = $di->get('foo');
+        $foo = $di->get('foo');
 
-        $this->assertInstanceOf(Foo::class, $bar);
+        $this->assertInstanceOf(Foo::class, $foo);
     }
 
     /**
@@ -225,4 +225,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->expectException(InvalidServiceException::class);
         $di->get('string', 'double');
     }
+
+    /**
+     * @test
+     */
+    public function shouldNotHaveServiceAfterUnset()
+    {
+        $di = new Container();
+        $di->set('foo', function () {
+            return new Foo();
+        });
+        $this->assertTrue($di->has('foo'));
+
+        $di->forget('foo');
+        $this->assertFalse($di->has('foo'));
+	}
 }
