@@ -19,6 +19,30 @@ $service = $di->get('some_service');
 
 // Check if service exists
 $hasService = $di->has('some_service');
+
+// Remove service
+$di->forget('some_service');
+```
+
+Alternatively, you can use the array syntax:
+
+```php
+// Create container
+$di = new Container();
+
+// Set service
+$di['some_service'] = function () {
+    return new SomeService();
+};
+
+// Get service
+$service = $di['some_service'];
+
+// Check if service exists
+$hasService = isset($di['some_service']);
+
+// Remove service
+unset($di['some_service']);
 ```
 
 ## Dependent services
