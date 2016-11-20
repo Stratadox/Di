@@ -2,13 +2,14 @@
 
 namespace Stratadox\Di;
 
+use ArrayAccess;
 use Closure;
 use Exception;
 use Stratadox\Di\Exception\InvalidFactoryException;
 use Stratadox\Di\Exception\InvalidServiceException;
 use Stratadox\Di\Exception\UndefinedServiceException;
 
-class Container implements ContainerInterface
+class Container implements ContainerInterface, ArrayAccess
 {
     /** @var mixed[] */
     protected $services = [];
@@ -33,20 +34,20 @@ class Container implements ContainerInterface
                 $this->services[$name] = $this->factories[$name]();
             } catch (Exception $e) {
                 throw new InvalidFactoryException(sprintf(
-					'Service %s was configured incorrectly and could not be created: %s',
-					$name,
-					$e->getMessage()
-				), 0, $e);
+                    'Service %s was configured incorrectly and could not be created: %s',
+                    $name,
+                    $e->getMessage()
+                ), 0, $e);
             }
         }
         $service = $this->services[$name];
         if ($type !== '' && gettype($service) !== $type && !($service instanceof $type)) {
             throw new InvalidServiceException(sprintf(
-				'Service %s (%s) is not of type %s',
-				$name,
-				is_object($service) ? get_class($service) : gettype($service),
-				$type
-			));
+                'Service %s (%s) is not of type %s',
+                $name,
+                is_object($service) ? get_class($service) : gettype($service),
+                $type
+            ));
         }
         return $service;
     }
@@ -73,5 +74,39 @@ class Container implements ContainerInterface
      */
     public function forget($name) {
         unset($this->factories[$name], $this->services[$name]);
+    }
+
+    /**
+     * @param string $offset
+     * @return bool
+     */
+    public function offsetExists($offset) {
+        return $this->has($offset);
+    }
+
+    /**
+     * @param string $offset
+     * @return mixed
+     * @throws InvalidFactoryException
+     * @throws InvalidServiceException
+     * @throws UndefinedServiceException
+     */
+    public function offsetGet($offset) {
+        return $this->get($offset);
+    }
+
+    /**
+     * @param string $offset
+     * @param Closure $value
+     */
+    public function offsetSet($offset, $value) {
+        $this->set($offset, $value);
+    }
+
+    /**
+     * @param string $offset
+     */
+    public function offsetUnset($offset) {
+        $this->forget($offset);
     }
 }

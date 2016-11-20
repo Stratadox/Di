@@ -235,9 +235,28 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $di->set('foo', function () {
             return new Foo();
         });
+
         $this->assertTrue($di->has('foo'));
 
         $di->forget('foo');
+
         $this->assertFalse($di->has('foo'));
-	}
+    }
+
+    /**
+     * @test
+     */
+    public function shouldAllowArraySyntax()
+    {
+        $di = new Container();
+        $di['foo'] = function () {
+            return new Foo();
+        };
+
+        $this->assertArrayHasKey('foo', $di);
+        $this->assertInstanceOf(Foo::class, $di['foo']);
+
+        unset($di['foo']);
+        $this->assertFalse(isset($di['foo']));
+    }
 }
