@@ -84,13 +84,4 @@ class Container implements ContainerInterface
         $this->instances[$name] = null;
         $this->factories[$name] = $factory;
     }
-
-    /**
-     * @param array $services
-     */
-    public function setMany(array $services) {
-        foreach ($services as $name => $factory) {
-            $this->set($name, $factory);
-        }
-    }
 }

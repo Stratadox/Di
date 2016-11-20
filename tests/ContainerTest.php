@@ -198,42 +198,4 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->expectException(InvalidServiceException::class);
         $di->get('bar', Foo::class);
     }
-
-    /**
-     * @test
-     */
-    public function shouldRegisterMultipleServicesAtOnce()
-    {
-        $di = new Container();
-        $di->setMany([
-            'bar' => function () {
-                return new Bar();
-            },
-            'foo' => function () {
-                return new Foo();
-            },
-        ]);
-
-        $this->assertTrue($di->has('bar'));
-        $this->assertTrue($di->has('foo'));
-    }
-
-    /**
-     * @test
-     */
-    public function shouldReturnMassSetServices()
-    {
-        $di = new Container();
-        $di->setMany([
-            'bar' => function () {
-                return new Bar();
-            },
-            'foo' => function () {
-                return new Foo();
-            },
-        ]);
-
-        $this->assertInstanceOf(Bar::class, $di->get('bar'));
-        $this->assertInstanceOf(Foo::class, $di->get('foo'));
-    }
 }

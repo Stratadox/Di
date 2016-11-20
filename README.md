@@ -14,16 +14,6 @@ $di->set('some_service', function () {
     return new SomeService();
 });
 
-// Set multiple services at once
-$di->setMany([
-    'some_service' => function () {
-        return new SomeService();
-    },
-    'other_service' => function () {
-        return new OtherService();
-    },
-]);
-
 // Get service
 $service = $di->get('some_service');
 
