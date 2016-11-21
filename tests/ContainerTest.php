@@ -199,6 +199,22 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function shouldReturnNewInstanceWithCacheDisabled()
+    {
+        $di = new Container();
+        $di->set('bar', function () {
+            return new Bar();
+        }, false);
+
+        $bar1 = $di->get('bar');
+        $bar2 = $di->get('bar');
+
+        $this->assertNotSame($bar1, $bar2);
+    }
+
+    /**
+     * @test
+     */
     public function shouldReturnServiceOnCorrectInterface()
     {
         $di = new Container();

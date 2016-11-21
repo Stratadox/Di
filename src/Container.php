@@ -40,6 +40,9 @@ class Container implements ContainerInterface
 
     /** @var Closure[] */
     protected $factories = [];
+    
+    /** @var bool[] */
+    protected $useCache = [];
 
     /**
      * @param string $name
@@ -50,19 +53,8 @@ class Container implements ContainerInterface
      * @throws UndefinedServiceException
      */
     public function get($name, $type = '') {
-        if (!isset($this->services[$name])) {
-            if (!isset($this->factories[$name])) {
-                throw new UndefinedServiceException(sprintf('No service registered for %s', $name));
-            }
-            try {
-                $this->services[$name] = $this->factories[$name]();
-            } catch (Exception $e) {
-                throw new InvalidFactoryException(sprintf(
-                    'Service %s was configured incorrectly and could not be created: %s',
-                    $name,
-                    $e->getMessage()
-                ), 0, $e);
-            }
+        if (!isset($this->services[$name]) || !$this->useCache[$name]) {
+            $this->services[$name] = $this->loadService($name);
         }
         $service = $this->services[$name];
         if ($type !== '' && gettype($service) !== $type && !($service instanceof $type)) {
@@ -87,10 +79,12 @@ class Container implements ContainerInterface
     /**
      * @param string $name
      * @param Closure $factory
+     * @param bool $cache
      */
-    public function set($name, Closure $factory) {
+    public function set($name, Closure $factory, $cache = true) {
         $this->services[$name] = null;
         $this->factories[$name] = $factory;
+        $this->useCache[$name] = (bool) $cache;
     }
 
     /**
@@ -98,5 +92,25 @@ class Container implements ContainerInterface
      */
     public function forget($name) {
         unset($this->factories[$name], $this->services[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     * @throws InvalidFactoryException
+     */
+    protected function loadService($name) {
+        if (!isset($this->factories[$name])) {
+            throw new UndefinedServiceException(sprintf('No service registered for %s', $name));
+        }
+        try {
+            return $this->factories[$name]();
+        } catch (Exception $e) {
+            throw new InvalidFactoryException(sprintf(
+                'Service %s was configured incorrectly and could not be created: %s',
+                $name,
+                $e->getMessage()
+            ), 0, $e);
+        }
     }
 }
