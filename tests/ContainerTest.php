@@ -27,6 +27,7 @@
 
 namespace Stratadox\Di\Test;
 
+use Stratadox\Di\ArrayAdapter;
 use Stratadox\Di\Container;
 use Stratadox\Di\Exception\InvalidFactoryException;
 use Stratadox\Di\Exception\InvalidServiceException;
@@ -273,7 +274,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldAllowArraySyntax()
     {
-        $di = new Container();
+        $di = new ArrayAdapter(new Container());
         $di['foo'] = function () {
             return new Foo();
         };
