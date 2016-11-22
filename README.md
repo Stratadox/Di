@@ -28,7 +28,7 @@ Alternatively, you can use the array syntax:
 
 ```php
 // Create container
-$di = new Container();
+$di = new ArrayAdapter(new Container());
 
 // Set service
 $di['some_service'] = function () {
