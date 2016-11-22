@@ -57,15 +57,20 @@ class Container implements ContainerInterface
             $this->services[$name] = $this->loadService($name);
         }
         $service = $this->services[$name];
-        if ($type !== '' && gettype($service) !== $type && !($service instanceof $type)) {
-            throw new InvalidServiceException(sprintf(
-                'Service %s (%s) is not of type %s',
-                $name,
-                is_object($service) ? get_class($service) : gettype($service),
-                $type
-            ));
+        if ($type === '') {
+            return $service;
         }
-        return $service;
+        if ($type === gettype($service)) {
+            return $service;
+        }
+        if ($service instanceof $type) {
+            return $service;
+        }
+        throw new InvalidServiceException(sprintf(
+            'Service %s is not of type %s',
+            $name,
+            $type
+        ));
     }
 
     /**
@@ -98,6 +103,7 @@ class Container implements ContainerInterface
      * @param string $name
      * @return mixed
      * @throws InvalidFactoryException
+     * @throws UndefinedServiceException
      */
     protected function loadService($name) {
         if (!isset($this->factories[$name])) {
