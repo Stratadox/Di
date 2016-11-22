@@ -87,3 +87,12 @@ You can assert the service to be of a certain class or implement an interface wh
 ```php
 $foo = $di->get('foo', Foo::class);
 ```
+## Cache
+
+By default, services are cached. You can trigger the factory on each request by setting cache to false.
+```php
+// Set service
+$di->set('some_service', function () {
+    return new SomeService();
+}, false);
+```
