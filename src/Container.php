@@ -52,7 +52,8 @@ class Container implements ContainerInterface
      * @throws InvalidServiceException
      * @throws UndefinedServiceException
      */
-    public function get($name, $type = '') {
+    public function get($name, $type = '')
+    {
         if (!isset($this->services[$name]) || !$this->useCache[$name]) {
             $this->services[$name] = $this->loadService($name);
         }
@@ -77,7 +78,8 @@ class Container implements ContainerInterface
      * @param string $name
      * @return bool
      */
-    public function has($name) {
+    public function has($name)
+    {
         return isset($this->factories[$name]);
     }
 
@@ -86,7 +88,8 @@ class Container implements ContainerInterface
      * @param Closure $factory
      * @param bool $cache
      */
-    public function set($name, Closure $factory, $cache = true) {
+    public function set($name, Closure $factory, $cache = true)
+    {
         $this->services[$name] = null;
         $this->factories[$name] = $factory;
         $this->useCache[$name] = (bool) $cache;
@@ -95,7 +98,8 @@ class Container implements ContainerInterface
     /**
      * @param string $name
      */
-    public function forget($name) {
+    public function forget($name)
+    {
         unset($this->factories[$name], $this->services[$name]);
     }
 
@@ -105,7 +109,8 @@ class Container implements ContainerInterface
      * @throws InvalidFactoryException
      * @throws UndefinedServiceException
      */
-    protected function loadService($name) {
+    protected function loadService($name)
+    {
         if (!isset($this->factories[$name])) {
             throw new UndefinedServiceException(sprintf('No service registered for %s', $name));
         }
