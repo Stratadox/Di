@@ -31,7 +31,7 @@ use Closure;
 
 interface ContainerInterface
 {
-    public function set($name, Closure $factory, $cache = false);
+    public function set($name, Closure $factory, $cache = true);
     public function get($name, $type = '');
     public function has($name);
     public function forget($name);
