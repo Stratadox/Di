@@ -29,11 +29,12 @@ namespace Stratadox\Di;
 
 use Closure;
 use Exception;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Stratadox\Di\Exception\InvalidFactoryException;
 use Stratadox\Di\Exception\InvalidServiceException;
 use Stratadox\Di\Exception\UndefinedServiceException;
 
-class Container implements ContainerInterface
+class Container implements ContainerInterface, PsrContainerInterface
 {
     /** @var mixed[] */
     protected $services = [];
