@@ -27,6 +27,7 @@
 
 namespace Stratadox\Di\Test;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
 use Stratadox\Di\ArrayAdapter;
 use Stratadox\Di\Container;
@@ -38,7 +39,7 @@ use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends TestCase
 {
     /**
      * @test

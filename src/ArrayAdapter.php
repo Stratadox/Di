@@ -28,6 +28,10 @@
 namespace Stratadox\Di;
 
 use ArrayAccess;
+use Closure;
+use Stratadox\Di\Exception\InvalidFactoryException;
+use Stratadox\Di\Exception\InvalidServiceException;
+use Stratadox\Di\Exception\UndefinedServiceException;
 
 class ArrayAdapter implements ArrayAccess
 {
