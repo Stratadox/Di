@@ -297,21 +297,4 @@ class ContainerTest extends TestCase
 
         $this->assertFalse($di->has('foo'));
     }
-
-    /**
-     * @test
-     */
-    public function shouldAllowArraySyntax()
-    {
-        $di = new ArrayAdapter(new Container());
-        $di['foo'] = function () {
-            return new Foo();
-        };
-
-        $this->assertArrayHasKey('foo', $di);
-        $this->assertInstanceOf(Foo::class, $di['foo']);
-
-        unset($di['foo']);
-        $this->assertFalse(isset($di['foo']));
-    }
 }
