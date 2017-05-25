@@ -27,6 +27,7 @@
 
 namespace Stratadox\Di\Test;
 
+use Psr\Container\NotFoundExceptionInterface;
 use Stratadox\Di\ArrayAdapter;
 use Stratadox\Di\Container;
 use Stratadox\Di\Exception\InvalidFactoryException;
@@ -177,6 +178,17 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $di = new Container();
 
         $this->expectException(UndefinedServiceException::class);
+        $di->get('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldThrowPsrExceptionForNonExistingService()
+    {
+        $di = new Container();
+
+        $this->expectException(NotFoundExceptionInterface::class);
         $di->get('foo');
     }
 
