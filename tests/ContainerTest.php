@@ -27,7 +27,7 @@
 
 namespace Stratadox\Di\Test;
 
-use Stratadox\Di\ArrayAdapter;
+use PHPUnit\Framework\TestCase;
 use Stratadox\Di\Container;
 use Stratadox\Di\Exception\InvalidFactoryException;
 use Stratadox\Di\Exception\InvalidServiceException;
@@ -37,7 +37,7 @@ use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends TestCase
 {
     /**
      * @test
