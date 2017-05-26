@@ -101,7 +101,7 @@ class Container implements ContainerInterface, PsrContainerInterface
      */
     public function forget($name)
     {
-        unset($this->factories[$name], $this->services[$name]);
+        unset($this->factories[$name], $this->services[$name], $this->useCache[$name]);
     }
 
     /**
