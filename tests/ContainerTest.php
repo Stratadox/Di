@@ -4,7 +4,6 @@ namespace Stratadox\Di\Test;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
-use Stratadox\Di\ArrayAdapter;
 use Stratadox\Di\Container;
 use Stratadox\Di\Exception\InvalidFactoryException;
 use Stratadox\Di\Exception\InvalidServiceException;
