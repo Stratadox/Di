@@ -271,4 +271,38 @@ class ContainerTest extends TestCase
 
         $this->assertFalse($di->has('foo'));
     }
+
+    /**
+     * @test
+     */
+    public function shouldBlockSelfReferencingFactories()
+    {
+        $di = new Container();
+        $di->set('foo', function () use ($di) {
+            return $di->get('foo');
+        });
+
+        $this->expectException(InvalidFactoryException::class);
+        $di->get('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBlockRecursiveDependenciesBetweenFactories()
+    {
+        $di = new Container();
+        $di->set('foo', function () use ($di) {
+            return $di->get('bar');
+        });
+        $di->set('bar', function () use ($di) {
+            return $di->get('baz');
+        });
+        $di->set('baz', function () use ($di) {
+            return $di->get('foo');
+        });
+
+        $this->expectException(InvalidFactoryException::class);
+        $di->get('foo');
+    }
 }
