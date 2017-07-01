@@ -305,4 +305,19 @@ class ContainerTest extends TestCase
         $this->expectException(InvalidFactory::class);
         $di->get('foo');
     }
+
+    /**
+     * @test
+     */
+    public function factoriesThatForgetThemselvesProduceOnceAndQuitForever()
+    {
+        $di = new Container();
+        $di->set('foo', function () use ($di) {
+            $di->forget('foo');
+            return 'Bye!';
+        });
+
+        $this->assertEquals('Bye!', $di->get('foo'));
+        $this->assertFalse($di->has('foo'));
+    }
 }
