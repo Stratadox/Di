@@ -91,7 +91,7 @@ You can assert the service to be of a certain class or implement an interface wh
 ```php
 $foo = $di->get('foo', Foo::class);
 ```
-If the type assertion fails, an InvalidServiceException is thrown.
+If the type assertion fails, an InvalidServiceType exception is thrown.
 
 ## Cache
 
