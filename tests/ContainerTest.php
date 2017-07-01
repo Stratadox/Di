@@ -311,11 +311,6 @@ class ContainerTest extends TestCase
      */
     public function factoriesThatForgetThemselvesProduceOnceAndQuitForever()
     {
-        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-            $this->markTestSkipped(
-                'Destroying an active lambda was illegal in pre-7 PHP versions'
-            );
-        }
         $di = new Container();
         $di->set('foo', function () use ($di) {
             $di->forget('foo');
