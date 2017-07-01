@@ -5,9 +5,9 @@ namespace Stratadox\Di\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
 use Stratadox\Di\Container;
-use Stratadox\Di\Exception\InvalidFactoryException;
-use Stratadox\Di\Exception\InvalidServiceException;
-use Stratadox\Di\Exception\UndefinedServiceException;
+use Stratadox\Di\Exception\InvalidFactory;
+use Stratadox\Di\Exception\InvalidServiceType;
+use Stratadox\Di\Exception\ServiceNotFound;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
@@ -141,7 +141,7 @@ class ContainerTest extends TestCase
         });
 
         // Invalid because service 'foo' has a Bar, not a Foo
-        $this->expectException(InvalidFactoryException::class);
+        $this->expectException(InvalidFactory::class);
         $di->get('baz');
     }
 
@@ -152,7 +152,7 @@ class ContainerTest extends TestCase
     {
         $di = new Container();
 
-        $this->expectException(UndefinedServiceException::class);
+        $this->expectException(ServiceNotFound::class);
         $di->get('foo');
     }
 
@@ -224,7 +224,7 @@ class ContainerTest extends TestCase
             return new Bar();
         });
 
-        $this->expectException(InvalidServiceException::class);
+        $this->expectException(InvalidServiceType::class);
         $di->get('bar', Foo::class);
     }
 
@@ -251,7 +251,7 @@ class ContainerTest extends TestCase
             return 'Hello world!';
         });
 
-        $this->expectException(InvalidServiceException::class);
+        $this->expectException(InvalidServiceType::class);
         $di->get('string', 'double');
     }
 
@@ -282,7 +282,7 @@ class ContainerTest extends TestCase
             return $di->get('foo');
         });
 
-        $this->expectException(InvalidFactoryException::class);
+        $this->expectException(InvalidFactory::class);
         $di->get('foo');
     }
 
@@ -302,7 +302,7 @@ class ContainerTest extends TestCase
             return $di->get('foo');
         });
 
-        $this->expectException(InvalidFactoryException::class);
+        $this->expectException(InvalidFactory::class);
         $di->get('foo');
     }
 }
