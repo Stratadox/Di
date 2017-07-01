@@ -1,5 +1,9 @@
-# Di [![Build Status](https://travis-ci.org/Stratadox/Di.svg?branch=master)](https://travis-ci.org/Stratadox/Di)
-A most simplistic Dependency Injection Container
+# Di 
+
+[![Build Status](https://travis-ci.org/Stratadox/Di.svg?branch=master)](https://travis-ci.org/Stratadox/Di)
+[![Coverage Status](https://coveralls.io/repos/github/Stratadox/Di/badge.svg?branch=master)](https://coveralls.io/github/Stratadox/Di?branch=master)
+
+A minimalistic Dependency Injection Container
 
 Services are lazy loaded through the use of anonymous functions.
 
@@ -57,7 +61,7 @@ $di->set('collaborator', function () {
 });
 
 $di->set('main_service', function () use ($di) {
-    return new MainService($di->get('collaborator');
+    return new MainService($di->get('collaborator'));
 });
 
 $service = $di->get('main_service');
@@ -87,6 +91,8 @@ You can assert the service to be of a certain class or implement an interface wh
 ```php
 $foo = $di->get('foo', Foo::class);
 ```
+If the type assertion fails, an InvalidServiceException is thrown.
+
 ## Cache
 
 By default, services are cached. You can trigger the factory on each request by setting cache to false.
