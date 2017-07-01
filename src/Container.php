@@ -5,32 +5,25 @@ namespace Stratadox\Di;
 use Closure;
 use Exception;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
-use Stratadox\Di\Exception\CircularDependencyException;
-use Stratadox\Di\Exception\InvalidFactoryException;
-use Stratadox\Di\Exception\InvalidServiceException;
-use Stratadox\Di\Exception\UndefinedServiceException;
+use Stratadox\Di\Exception\DependenciesCannotBeCircular;
+use Stratadox\Di\Exception\InvalidFactory;
+use Stratadox\Di\Exception\InvalidServiceType;
+use Stratadox\Di\Exception\ServiceNotFound;
 
 class Container implements ContainerInterface, PsrContainerInterface
 {
-    /** @var mixed[] */
     protected $services = [];
-
-    /** @var Closure[] */
     protected $factories = [];
-    
-    /** @var bool[] */
     protected $useCache = [];
-
-    /** @var bool[] */
     protected $currentlyResolving = [];
 
     /**
      * @param string $name
-     * @param string $type = ''
+     * @param string $type
      * @return mixed
-     * @throws InvalidFactoryException
-     * @throws InvalidServiceException
-     * @throws UndefinedServiceException
+     * @throws InvalidFactory
+     * @throws ServiceNotFound
+     * @throws InvalidServiceType
      */
     public function get($name, $type = '')
     {
@@ -47,11 +40,7 @@ class Container implements ContainerInterface, PsrContainerInterface
         if ($service instanceof $type) {
             return $service;
         }
-        throw new InvalidServiceException(sprintf(
-            'Service %s is not of type %s',
-            $name,
-            $type
-        ));
+        throw InvalidServiceType::serviceIsNotOfType($name, $type);
     }
 
     /**
@@ -83,41 +72,31 @@ class Container implements ContainerInterface, PsrContainerInterface
         unset(
             $this->factories[$name],
             $this->services[$name],
-            $this->useCache[$name],
-            $this->currentlyResolving[$name]
+            $this->useCache[$name]
         );
     }
 
     /**
      * @param string $name
      * @return mixed
-     * @throws InvalidFactoryException
-     * @throws UndefinedServiceException
+     * @throws InvalidFactory
+     * @throws DependenciesCannotBeCircular
+     * @throws ServiceNotFound
      */
     protected function loadService($name)
     {
         if (!isset($this->factories[$name])) {
-            throw new UndefinedServiceException(sprintf(
-                'No service registered for %s',
-                $name
-            ));
+            throw ServiceNotFound::noServiceNamed($name);
         }
         if (isset($this->currentlyResolving[$name])) {
-            throw new CircularDependencyException(sprintf(
-                'Circular dependency detected for %s',
-                $name
-            ));
+            throw DependenciesCannotBeCircular::loopDetectedIn($name);
         }
         $this->currentlyResolving[$name] = true;
 
         try {
             $service = $this->factories[$name]();
         } catch (Exception $e) {
-            throw new InvalidFactoryException(sprintf(
-                'Service %s was configured incorrectly and could not be created: %s',
-                $name,
-                $e->getMessage()
-            ), 0, $e);
+            throw InvalidFactory::threwException($name, $e);
         }
         unset($this->currentlyResolving[$name]);
         return $service;

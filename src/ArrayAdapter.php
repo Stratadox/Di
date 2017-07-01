@@ -4,9 +4,9 @@ namespace Stratadox\Di;
 
 use ArrayAccess;
 use Closure;
-use Stratadox\Di\Exception\InvalidFactoryException;
-use Stratadox\Di\Exception\InvalidServiceException;
-use Stratadox\Di\Exception\UndefinedServiceException;
+use Stratadox\Di\Exception\InvalidFactory;
+use Stratadox\Di\Exception\InvalidServiceType;
+use Stratadox\Di\Exception\ServiceNotFound;
 
 class ArrayAdapter implements ArrayAccess
 {
@@ -35,9 +35,9 @@ class ArrayAdapter implements ArrayAccess
     /**
      * @param string $offset
      * @return mixed
-     * @throws InvalidFactoryException
-     * @throws InvalidServiceException
-     * @throws UndefinedServiceException
+     * @throws InvalidFactory
+     * @throws InvalidServiceType
+     * @throws ServiceNotFound
      */
     public function offsetGet($offset)
     {
