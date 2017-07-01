@@ -52,7 +52,7 @@ class Container implements ContainerInterface, PsrContainerInterface
     ) {
         $this->services[$serviceName] = null;
         $this->factories[$serviceName] = $factory;
-        $this->useCache[$serviceName] = (bool) $useCache;
+        $this->useCache[$serviceName] = $useCache;
     }
 
     public function forget(string $serviceName)
