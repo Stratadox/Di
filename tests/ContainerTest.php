@@ -238,7 +238,7 @@ class ContainerTest extends TestCase
             return 'Hello world!';
         });
 
-        $this->assertEquals('Hello world!', $di->get('string', 'string'));
+        $this->assertSame('Hello world!', $di->get('string', 'string'));
     }
 
     /**
@@ -317,7 +317,7 @@ class ContainerTest extends TestCase
             return 'Bye!';
         });
 
-        $this->assertEquals('Bye!', $di->get('foo'));
+        $this->assertSame('Bye!', $di->get('foo'));
         $this->assertFalse($di->has('foo'));
     }
 
