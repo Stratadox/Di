@@ -320,4 +320,16 @@ class ContainerTest extends TestCase
         $this->assertEquals('Bye!', $di->get('foo'));
         $this->assertFalse($di->has('foo'));
     }
+
+    /**
+     * @test
+     */
+    public function selfReferencingContainersAreAllowed()
+    {
+        $di = new Container();
+        $di->set('di', function () use ($di) {
+            return $di;
+        });
+        $this->assertSame($di, $di->get('di'));
+    }
 }
