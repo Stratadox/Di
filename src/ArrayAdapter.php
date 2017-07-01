@@ -10,9 +10,6 @@ use Stratadox\Di\Exception\ServiceNotFound;
 
 class ArrayAdapter implements ArrayAccess
 {
-    /**
-     * @var ContainerInterface $container
-     */
     protected $container;
 
     /**
@@ -27,7 +24,7 @@ class ArrayAdapter implements ArrayAccess
      * @param string $offset
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return $this->container->has($offset);
     }

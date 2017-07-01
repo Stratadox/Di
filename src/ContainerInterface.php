@@ -11,23 +11,23 @@ interface ContainerInterface
      * @param Closure $factory
      * @param bool $cache
      */
-    public function set($name, Closure $factory, $cache = true);
+    public function set(string $name, Closure $factory, bool $cache = true);
 
     /**
      * @param string $name
      * @param string $type
      * @return mixed
      */
-    public function get($name, $type = '');
+    public function get($name, string $type = '');
 
     /**
      * @param string $name
      * @return boolean
      */
-    public function has($name);
+    public function has($name) : bool;
 
     /**
      * @param string $name
      */
-    public function forget($name);
+    public function forget(string $name);
 }
