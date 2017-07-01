@@ -22,12 +22,12 @@ class Container implements ContainerInterface, PsrContainerInterface
      * @throws ServiceNotFound
      * @throws InvalidServiceType
      */
-    public function get($name, string $type = '')
+    public function get($serviceName, string $type = '')
     {
-        if (!isset($this->services[$name]) || !$this->useCache[$name]) {
-            $this->services[$name] = $this->loadService($name);
+        if (!isset($this->services[$serviceName]) || !$this->useCache[$serviceName]) {
+            $this->services[$serviceName] = $this->loadService($serviceName);
         }
-        $service = $this->services[$name];
+        $service = $this->services[$serviceName];
         if ($type === '') {
             return $service;
         }
@@ -37,27 +37,30 @@ class Container implements ContainerInterface, PsrContainerInterface
         if ($service instanceof $type) {
             return $service;
         }
-        throw InvalidServiceType::serviceIsNotOfType($name, $type);
+        throw InvalidServiceType::serviceIsNotOfType($serviceName, $type);
     }
 
-    public function has($name) : bool
+    public function has($serviceName) : bool
     {
-        return isset($this->factories[$name]);
+        return isset($this->factories[$serviceName]);
     }
 
-    public function set(string $name, Closure $factory, bool $cache = true)
-    {
-        $this->services[$name] = null;
-        $this->factories[$name] = $factory;
-        $this->useCache[$name] = (bool) $cache;
+    public function set(
+        string $serviceName,
+        Closure $factory,
+        bool $useCache = true
+    ) {
+        $this->services[$serviceName] = null;
+        $this->factories[$serviceName] = $factory;
+        $this->useCache[$serviceName] = (bool) $useCache;
     }
 
-    public function forget(string $name)
+    public function forget(string $serviceName)
     {
         unset(
-            $this->factories[$name],
-            $this->services[$name],
-            $this->useCache[$name]
+            $this->factories[$serviceName],
+            $this->services[$serviceName],
+            $this->useCache[$serviceName]
         );
     }
 
@@ -66,21 +69,21 @@ class Container implements ContainerInterface, PsrContainerInterface
      * @throws DependenciesCannotBeCircular
      * @throws ServiceNotFound
      */
-    protected function loadService(string $name)
+    protected function loadService(string $serviceName)
     {
-        if (!isset($this->factories[$name])) {
-            throw ServiceNotFound::noServiceNamed($name);
+        if (!isset($this->factories[$serviceName])) {
+            throw ServiceNotFound::noServiceNamed($serviceName);
         }
-        if (isset($this->currentlyResolving[$name])) {
-            throw DependenciesCannotBeCircular::loopDetectedIn($name);
+        if (isset($this->currentlyResolving[$serviceName])) {
+            throw DependenciesCannotBeCircular::loopDetectedIn($serviceName);
         }
-        $this->currentlyResolving[$name] = true;
+        $this->currentlyResolving[$serviceName] = true;
         try {
-            $service = $this->factories[$name]();
-        } catch (Throwable $e) {
-            throw InvalidFactory::threwException($name, $e);
+            $service = $this->factories[$serviceName]();
+        } catch (Throwable $exception) {
+            throw InvalidFactory::threwException($serviceName, $exception);
         }
-        unset($this->currentlyResolving[$name]);
+        unset($this->currentlyResolving[$serviceName]);
         return $service;
     }
 }
