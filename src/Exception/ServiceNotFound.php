@@ -6,9 +6,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use Throwable;
 
-class ServiceNotFound
-    extends RuntimeException
-    implements NotFoundExceptionInterface
+class ServiceNotFound extends RuntimeException implements NotFoundExceptionInterface
 {
     public static function noServiceNamed(string $serviceName) : Throwable
     {

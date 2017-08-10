@@ -6,84 +6,92 @@ use Closure;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Stratadox\Di\Exception\DependenciesCannotBeCircular;
 use Stratadox\Di\Exception\InvalidFactory;
+use Stratadox\Di\Exception\InvalidServiceDefinition;
 use Stratadox\Di\Exception\InvalidServiceType;
 use Stratadox\Di\Exception\ServiceNotFound;
 use Throwable;
 
 class Container implements ContainerInterface, PsrContainerInterface
 {
-    protected $services = [];
-    protected $factories = [];
-    protected $useCache = [];
-    protected $currentlyResolving = [];
+    protected $remember = [];
+    protected $factoryFor = [];
+    protected $mustReload = [];
+    protected $isCurrentlyResolving = [];
 
     /**
-     * @throws InvalidFactory
+     * @throws InvalidServiceDefinition
      * @throws ServiceNotFound
-     * @throws InvalidServiceType
      */
-    public function get($serviceName, string $type = '')
+    public function get($theService, string $mustHaveThisType = '')
     {
-        if (!isset($this->services[$serviceName]) || !$this->useCache[$serviceName]) {
-            $this->services[$serviceName] = $this->loadService($serviceName);
+        $this->mustKnowAbout($theService);
+
+        if ($this->hasNotYetLoaded($theService) or $this->mustReload[$theService]) {
+            $this->remember[$theService] = $this->load($theService);
         }
-        $service = $this->services[$serviceName];
-        if ($type === '') {
-            return $service;
-        }
-        if ($type === gettype($service)) {
-            return $service;
-        }
-        if ($service instanceof $type) {
-            return $service;
-        }
-        throw InvalidServiceType::serviceIsNotOfType($serviceName, $type);
+
+        $ourService = $this->remember[$theService];
+        $this->typeMustCheckOut($theService, $ourService, $mustHaveThisType);
+        return $ourService;
     }
 
-    public function has($serviceName) : bool
+    public function has($theService) : bool
     {
-        return isset($this->factories[$serviceName]);
+        return isset($this->factoryFor[$theService]);
     }
 
     public function set(
-        string $serviceName,
-        Closure $factory,
-        bool $useCache = true
+        string $theService,
+        Closure $producingTheService,
+        bool $cache = true
     ) {
-        $this->services[$serviceName] = null;
-        $this->factories[$serviceName] = $factory;
-        $this->useCache[$serviceName] = (bool) $useCache;
+        $this->remember[$theService] = null;
+        $this->factoryFor[$theService] = $producingTheService;
+        $this->mustReload[$theService] = (bool) !$cache;
     }
 
-    public function forget(string $serviceName)
+    public function forget(string $theService)
     {
-        unset(
-            $this->factories[$serviceName],
-            $this->services[$serviceName],
-            $this->useCache[$serviceName]
-        );
+        unset($this->remember[$theService]);
+        unset($this->factoryFor[$theService]);
+        unset($this->mustReload[$theService]);
     }
 
-    /**
-     * @throws InvalidFactory
-     * @throws DependenciesCannotBeCircular
-     * @throws ServiceNotFound
-     */
-    protected function loadService(string $serviceName)
+    /** @throws InvalidServiceDefinition */
+    protected function load(string $theService)
     {
-        if (!isset($this->factories[$serviceName])) {
-            throw ServiceNotFound::noServiceNamed($serviceName);
+        if (isset($this->isCurrentlyResolving[$theService])) {
+            throw DependenciesCannotBeCircular::loopDetectedIn($theService);
         }
-        if (isset($this->currentlyResolving[$serviceName])) {
-            throw DependenciesCannotBeCircular::loopDetectedIn($serviceName);
-        }
-        $this->currentlyResolving[$serviceName] = true;
+        $this->isCurrentlyResolving[$theService] = true;
+        $makeTheService = $this->factoryFor[$theService];
         try {
-            $service = $this->factories[$serviceName]();
-        } catch (Throwable $exception) {
-            throw InvalidFactory::threwException($serviceName, $exception);
+            $ourService = $makeTheService();
+        } catch (Throwable $encounteredException) {
+            throw InvalidFactory::threwException($theService, $encounteredException);
         }
-        unset($this->currentlyResolving[$serviceName]);
-        return $service;
+        unset($this->isCurrentlyResolving[$theService]);
+        return $ourService;
+    }
+
+    private function hasNotYetLoaded(string $theService)
+    {
+        return !isset($this->remember[$theService]);
+    }
+
+    /** @throws ServiceNotFound */
+    private function mustKnowAbout(string $theService)
+    {
+        if ($this->has($theService)) return;
+        throw ServiceNotFound::noServiceNamed($theService);
+    }
+
+    /** @throws InvalidServiceDefinition */
+    private function typeMustCheckOut(string $serviceName, $service, string $requiredType)
+    {
+        if (empty($requiredType)) return;
+        if (gettype($service) === $requiredType) return;
+        if ($service instanceof $requiredType) return;
+        throw InvalidServiceType::serviceIsNotOfType($serviceName, $requiredType);
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Stratadox\Di\Exception;
 
+use RuntimeException;
 use Throwable;
 
-class InvalidFactory extends InvalidServiceDefinition
+class InvalidFactory extends RuntimeException implements InvalidServiceDefinition
 {
     public static function threwException(
         string $serviceName,
