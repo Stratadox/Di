@@ -7,6 +7,14 @@ A minimalistic Dependency Injection Container
 
 Services are lazy loaded through the use of anonymous functions.
 
+## Installation
+
+Install using composer:
+
+```
+composer require stratadox/di
+```
+
 ## Basic usage
 
 ```php
