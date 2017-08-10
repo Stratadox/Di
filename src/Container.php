@@ -47,7 +47,7 @@ class Container implements ContainerInterface, PsrContainerInterface
     ) {
         $this->remember[$theService] = null;
         $this->factoryFor[$theService] = $producingTheService;
-        $this->mustReload[$theService] = (bool) !$cache;
+        $this->mustReload[$theService] = !$cache;
     }
 
     public function forget(string $theService)
@@ -66,12 +66,12 @@ class Container implements ContainerInterface, PsrContainerInterface
         $this->isCurrentlyResolving[$theService] = true;
         $makeTheService = $this->factoryFor[$theService];
         try {
-            $ourService = $makeTheService();
+            return $makeTheService();
         } catch (Throwable $encounteredException) {
             throw InvalidFactory::threwException($theService, $encounteredException);
+        } finally {
+            unset($this->isCurrentlyResolving[$theService]);
         }
-        unset($this->isCurrentlyResolving[$theService]);
-        return $ourService;
     }
 
     private function hasNotYetLoaded(string $theService)

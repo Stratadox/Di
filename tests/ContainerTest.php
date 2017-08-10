@@ -2,6 +2,7 @@
 
 namespace Stratadox\Di\Test;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
 use Stratadox\Di\Container;
@@ -12,6 +13,7 @@ use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
+use Throwable;
 
 class ContainerTest extends TestCase
 {
@@ -331,5 +333,28 @@ class ContainerTest extends TestCase
             return $di;
         });
         $this->assertSame($di, $di->get('di'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotThrowAnExceptionWhenRetryingAfterFactoryException()
+    {
+        $di = new Container();
+        $di->set('foo', function () {
+            throw new Exception();
+        });
+
+        try {
+            $di->get('foo');
+        } catch (Throwable $exception) {
+            // As expected.
+        }
+
+        $di->set('foo', function () {
+            return new Foo();
+        });
+
+        $this->assertInstanceOf(Foo::class, $di->get('foo'));
     }
 }
