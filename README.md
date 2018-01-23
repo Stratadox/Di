@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Stratadox/Di.svg?branch=master)](https://travis-ci.org/Stratadox/Di)
 [![Coverage Status](https://coveralls.io/repos/github/Stratadox/Di/badge.svg?branch=master)](https://coveralls.io/github/Stratadox/Di?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Stratadox/Di/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Stratadox/Di/?branch=master)
 
 A minimalistic Dependency Injection Container
 
