@@ -7,27 +7,27 @@ use Closure;
 interface ContainerInterface
 {
     /**
-     * @param string $serviceName
+     * @param string $service
      * @param Closure $factory
-     * @param bool $useCache
+     * @param bool $cache
      */
-    public function set(string $serviceName, Closure $factory, bool $useCache = true);
+    public function set(string $service, Closure $factory, bool $cache = true);
 
     /**
-     * @param string $serviceName
+     * @param string $service
      * @param string $type
      * @return mixed
      */
-    public function get($serviceName, string $type = '');
+    public function get($service, string $type = '');
 
     /**
-     * @param string $serviceName
+     * @param string $service
      * @return boolean
      */
-    public function has($serviceName) : bool;
+    public function has($service) : bool;
 
     /**
-     * @param string $serviceName
+     * @param string $service
      */
-    public function forget(string $serviceName);
+    public function forget(string $service);
 }
