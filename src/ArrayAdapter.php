@@ -4,9 +4,7 @@ namespace Stratadox\Di;
 
 use ArrayAccess;
 use Closure;
-use Stratadox\Di\Exception\DependenciesCannotBeCircular;
-use Stratadox\Di\Exception\InvalidFactory;
-use Stratadox\Di\Exception\InvalidServiceType;
+use Stratadox\Di\Exception\InvalidServiceDefinition;
 use Stratadox\Di\Exception\ServiceNotFound;
 
 class ArrayAdapter implements ArrayAccess
@@ -33,9 +31,7 @@ class ArrayAdapter implements ArrayAccess
     /**
      * @param string $offset
      * @return mixed
-     * @throws DependenciesCannotBeCircular
-     * @throws InvalidFactory
-     * @throws InvalidServiceType
+     * @throws InvalidServiceDefinition
      * @throws ServiceNotFound
      */
     public function offsetGet($offset)
