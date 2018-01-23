@@ -45,7 +45,7 @@ final class ArrayAdapter implements ArrayAccess
      * @param string $offset
      * @param Closure $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         $this->container->set($offset, $value);
     }
@@ -53,7 +53,7 @@ final class ArrayAdapter implements ArrayAccess
     /**
      * @param string $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         $this->container->forget($offset);
     }

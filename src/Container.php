@@ -45,14 +45,15 @@ final class Container implements ContainerInterface, PsrContainerInterface
         string $theService,
         Closure $producingTheService,
         bool $cache = true
-    ) {
+    ) : void
+    {
         $this->remember[$theService] = null;
         $this->factoryFor[$theService] = $producingTheService;
         $this->mustReload[$theService] = !$cache;
     }
 
     /** @inheritdoc */
-    public function forget(string $theService)
+    public function forget(string $theService) : void
     {
         unset($this->remember[$theService]);
         unset($this->factoryFor[$theService]);
@@ -76,20 +77,20 @@ final class Container implements ContainerInterface, PsrContainerInterface
         }
     }
 
-    private function hasNotYetLoaded(string $theService)
+    private function hasNotYetLoaded(string $theService) : bool
     {
         return !isset($this->remember[$theService]);
     }
 
     /** @throws ServiceNotFound */
-    private function mustKnowAbout(string $theService)
+    private function mustKnowAbout(string $theService) : void
     {
         if ($this->has($theService)) return;
         throw ServiceNotFound::noServiceNamed($theService);
     }
 
     /** @throws InvalidServiceDefinition */
-    private function typeMustCheckOut(string $serviceName, $service, string $requiredType)
+    private function typeMustCheckOut(string $serviceName, $service, string $requiredType) : void
     {
         if (empty($requiredType)) return;
         if (gettype($service) === $requiredType) return;
