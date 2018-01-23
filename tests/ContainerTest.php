@@ -17,10 +17,8 @@ use Throwable;
 
 class ContainerTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function indicating_that_a_service_is_known()
+    /** @scenario */
+    function indicating_that_a_service_is_known()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -30,19 +28,15 @@ class ContainerTest extends TestCase
         $this->assertTrue($di->has('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function indicating_that_a_service_is_not_known()
+    /** @scenario */
+    function indicating_that_a_service_is_not_known()
     {
         $di = new Container();
         $this->assertFalse($di->has('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function looking_up_a_registered_service()
+    /** @scenario */
+    function looking_up_a_registered_service()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -54,10 +48,8 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Foo::class, $foo);
     }
 
-    /**
-     * @test
-     */
-    public function looking_up_multiple_registered_services()
+    /** @scenario */
+    function looking_up_multiple_registered_services()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -71,10 +63,8 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Bar::class, $di->get('bar'));
     }
 
-    /**
-     * @test
-     */
-    public function overriding_a_previously_registered_service()
+    /** @scenario */
+    function overriding_a_previously_registered_service()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -87,10 +77,8 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Foo::class, $di->get('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function composing_services_through_the_container()
+    /** @scenario */
+    function composing_services_through_the_container()
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
@@ -103,10 +91,8 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Foo::class, $di->get('baz')->getFoo());
     }
 
-    /**
-     * @test
-     */
-    public function caching_composite_services()
+    /** @scenario */
+    function caching_composite_services()
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
@@ -129,10 +115,8 @@ class ContainerTest extends TestCase
         $this->assertSame($baz1, $baz2);
     }
 
-    /**
-     * @test
-     */
-    public function throwing_an_exception_when_a_factory_is_invalid()
+    /** @scenario */
+    function throwing_an_exception_when_a_factory_is_invalid()
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
@@ -147,10 +131,8 @@ class ContainerTest extends TestCase
         $di->get('baz');
     }
 
-    /**
-     * @test
-     */
-    public function throwing_an_exception_when_a_service_does_not_exist()
+    /** @scenario */
+    function throwing_an_exception_when_a_service_does_not_exist()
     {
         $di = new Container();
 
@@ -158,10 +140,8 @@ class ContainerTest extends TestCase
         $di->get('foo');
     }
 
-    /**
-     * @test
-     */
-    public function using_the_psr_interface_when_a_service_does_not_exist()
+    /** @scenario */
+    function using_the_psr_interface_when_a_service_does_not_exist()
     {
         $di = new Container();
 
@@ -169,10 +149,8 @@ class ContainerTest extends TestCase
         $di->get('foo');
     }
 
-    /**
-     * @test
-     */
-    public function caching_the_instances_for_future_use()
+    /** @scenario */
+    function caching_the_instances_for_future_use()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -185,10 +163,8 @@ class ContainerTest extends TestCase
         $this->assertSame($bar1, $bar2);
     }
 
-    /**
-     * @test
-     */
-    public function not_caching_the_instances_that_have_caching_disabled()
+    /** @scenario */
+    function not_caching_the_instances_that_have_caching_disabled()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -201,10 +177,8 @@ class ContainerTest extends TestCase
         $this->assertNotSame($bar1, $bar2);
     }
 
-    /**
-     * @test
-     */
-    public function looking_up_a_service_with_an_interface_constraint()
+    /** @scenario */
+    function looking_up_a_service_with_an_interface_constraint()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -216,10 +190,8 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(BarInterface::class, $bar);
     }
 
-    /**
-     * @test
-     */
-    public function throwing_an_exception_when_an_interface_constraint_is_not_met()
+    /** @scenario */
+    function throwing_an_exception_when_an_interface_constraint_is_not_met()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -230,10 +202,8 @@ class ContainerTest extends TestCase
         $di->get('bar', Foo::class);
     }
 
-    /**
-     * @test
-     */
-    public function looking_up_a_service_with_a_scalar_constraint()
+    /** @scenario */
+    function looking_up_a_service_with_a_scalar_constraint()
     {
         $di = new Container();
         $di->set('string', function () {
@@ -243,10 +213,8 @@ class ContainerTest extends TestCase
         $this->assertSame('Hello world!', $di->get('string', 'string'));
     }
 
-    /**
-     * @test
-     */
-    public function throwing_an_exception_when_a_scalar_constraint_is_not_met()
+    /** @scenario */
+    function throwing_an_exception_when_a_scalar_constraint_is_not_met()
     {
         $di = new Container();
         $di->set('string', function () {
@@ -257,10 +225,8 @@ class ContainerTest extends TestCase
         $di->get('string', 'double');
     }
 
-    /**
-     * @test
-     */
-    public function indicating_that_a_forgotten_service_does_not_exist_anymore()
+    /** @scenario */
+    function indicating_that_a_forgotten_service_does_not_exist_anymore()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -274,10 +240,8 @@ class ContainerTest extends TestCase
         $this->assertFalse($di->has('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function throwing_an_exception_when_a_factory_tries_to_infinitely_copy_itself()
+    /** @scenario */
+    function throwing_an_exception_when_a_factory_tries_to_infinitely_copy_itself()
     {
         $di = new Container();
         $di->set('foo', function () use ($di) {
@@ -288,10 +252,8 @@ class ContainerTest extends TestCase
         $di->get('foo');
     }
 
-    /**
-     * @test
-     */
-    public function throwing_an_exception_when_factories_try_to_infinitely_copy_each_other()
+    /** @scenario */
+    function throwing_an_exception_when_factories_try_to_infinitely_copy_each_other()
     {
         $di = new Container();
         $di->set('foo', function () use ($di) {
@@ -308,10 +270,8 @@ class ContainerTest extends TestCase
         $di->get('foo');
     }
 
-    /**
-     * @test
-     */
-    public function factories_that_forget_themselves_produce_once_and_quit_forever()
+    /** @scenario */
+    function factories_that_forget_themselves_produce_once_and_quit_forever()
     {
         $di = new Container();
         $di->set('foo', function () use ($di) {
@@ -323,10 +283,8 @@ class ContainerTest extends TestCase
         $this->assertFalse($di->has('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function allowing_a_factory_to_produce_the_container_it_is_in()
+    /** @scenario */
+    function allowing_a_factory_to_produce_the_container_it_is_in()
     {
         $di = new Container();
         $di->set('di', function () use ($di) {
@@ -335,10 +293,8 @@ class ContainerTest extends TestCase
         $this->assertSame($di, $di->get('di'));
     }
 
-    /**
-     * @test
-     */
-    public function recovering_into_a_workable_state_after_encountering_an_exception()
+    /** @scenario */
+    function recovering_into_a_workable_state_after_encountering_an_exception()
     {
         $di = new Container();
         $di->set('foo', function () {

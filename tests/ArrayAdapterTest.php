@@ -9,10 +9,8 @@ use Stratadox\Di\Test\Stub\Foo;
 
 class ArrayAdapterTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function looking_up_a_service_through_the_container()
+    /** @scenario */
+    function looking_up_a_service_through_the_container()
     {
         $container = new Container();
         $container->set('foo', function () {
@@ -24,10 +22,8 @@ class ArrayAdapterTest extends TestCase
         $this->assertSame($container->get('foo'), $di['foo']);
     }
 
-    /**
-     * @test
-     */
-    public function registering_a_service_to_the_container()
+    /** @scenario */
+    function registering_a_service_to_the_container()
     {
         $container = new Container();
 
@@ -41,10 +37,8 @@ class ArrayAdapterTest extends TestCase
         $this->assertSame($container->get('foo'), $di['foo']);
     }
 
-    /**
-     * @test
-     */
-    public function making_the_container_forget_a_service()
+    /** @scenario */
+    function making_the_container_forget_a_service()
     {
         $container = new Container();
         $container->set('foo', function () {
@@ -58,10 +52,8 @@ class ArrayAdapterTest extends TestCase
         $this->assertFalse($container->has('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function indicating_that_a_service_exists_in_the_container()
+    /** @scenario */
+    function indicating_that_a_service_exists_in_the_container()
     {
         $container = new Container();
         $container->set('foo', function () {
@@ -74,10 +66,8 @@ class ArrayAdapterTest extends TestCase
         $this->assertArrayHasKey('foo', $di);
     }
 
-    /**
-     * @test
-     */
-    public function indicating_that_a_service_does_not_exist_in_the_container()
+    /** @scenario */
+    function indicating_that_a_service_does_not_exist_in_the_container()
     {
         $di = new ArrayAdapter(new Container());
 
