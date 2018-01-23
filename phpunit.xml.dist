@@ -6,8 +6,7 @@
         colors="true"
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        syntaxCheck="true">
+        convertWarningsToExceptions="true">
 
     <testsuites>
         <testsuite name="Stratadox/Di test suite">
@@ -23,6 +22,7 @@
 
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml" />
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
 
     <php>
