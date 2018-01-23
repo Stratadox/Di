@@ -20,7 +20,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldIndicateWhenServiceIdIsSet()
+    public function indicating_that_a_service_is_known()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -33,7 +33,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldIndicateUnsetServiceIds()
+    public function indicating_that_a_service_is_not_known()
     {
         $di = new Container();
         $this->assertFalse($di->has('foo'));
@@ -42,7 +42,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnExistingService()
+    public function looking_up_a_registered_service()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -57,7 +57,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnCorrectService()
+    public function looking_up_multiple_registered_services()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -74,7 +74,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldAllowServiceOverride()
+    public function overriding_a_previously_registered_service()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -90,7 +90,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldAllowServiceComposition()
+    public function composing_services_through_the_container()
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
@@ -106,7 +106,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldCacheCompositeServices()
+    public function caching_composite_services()
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
@@ -132,7 +132,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldIndicateInvalidFactories()
+    public function throwing_an_exception_when_a_factory_is_invalid()
     {
         $di = new Container();
         $di->set('baz', function () use ($di) {
@@ -150,7 +150,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotReturnNonExistingService()
+    public function throwing_an_exception_when_a_service_does_not_exist()
     {
         $di = new Container();
 
@@ -161,7 +161,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldThrowPsrExceptionForNonExistingService()
+    public function using_the_psr_interface_when_a_service_does_not_exist()
     {
         $di = new Container();
 
@@ -172,7 +172,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnCachedInstances()
+    public function caching_the_instances_for_future_use()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -188,7 +188,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnNewInstanceWithCacheDisabled()
+    public function not_caching_the_instances_that_have_caching_disabled()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -204,7 +204,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnServiceOnCorrectInterface()
+    public function looking_up_a_service_with_an_interface_constraint()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -219,7 +219,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotReturnServiceOnInterfaceMismatch()
+    public function throwing_an_exception_when_an_interface_constraint_is_not_met()
     {
         $di = new Container();
         $di->set('bar', function () {
@@ -233,7 +233,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnScalarOnCorrectType()
+    public function looking_up_a_service_with_a_scalar_constraint()
     {
         $di = new Container();
         $di->set('string', function () {
@@ -246,7 +246,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotReturnScalarOnTypeMismatch()
+    public function throwing_an_exception_when_a_scalar_constraint_is_not_met()
     {
         $di = new Container();
         $di->set('string', function () {
@@ -260,7 +260,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotHaveServiceAfterUnset()
+    public function indicating_that_a_forgotten_service_does_not_exist_anymore()
     {
         $di = new Container();
         $di->set('foo', function () {
@@ -277,7 +277,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldBlockSelfReferencingFactories()
+    public function throwing_an_exception_when_a_factory_tries_to_infinitely_copy_itself()
     {
         $di = new Container();
         $di->set('foo', function () use ($di) {
@@ -291,7 +291,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldBlockRecursiveDependenciesBetweenFactories()
+    public function throwing_an_exception_when_factories_try_to_infinitely_copy_each_other()
     {
         $di = new Container();
         $di->set('foo', function () use ($di) {
@@ -311,7 +311,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function factoriesThatForgetThemselvesProduceOnceAndQuitForever()
+    public function factories_that_forget_themselves_produce_once_and_quit_forever()
     {
         $di = new Container();
         $di->set('foo', function () use ($di) {
@@ -326,7 +326,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function selfReferencingContainersAreAllowed()
+    public function allowing_a_factory_to_produce_the_container_it_is_in()
     {
         $di = new Container();
         $di->set('di', function () use ($di) {
@@ -338,7 +338,7 @@ class ContainerTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotThrowAnExceptionWhenRetryingAfterFactoryException()
+    public function recovering_into_a_workable_state_after_encountering_an_exception()
     {
         $di = new Container();
         $di->set('foo', function () {
