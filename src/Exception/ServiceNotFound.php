@@ -8,7 +8,7 @@ use Psr\Container\NotFoundExceptionInterface as NotFound;
 use RuntimeException;
 use function sprintf;
 
-class ServiceNotFound extends RuntimeException implements NotFound
+final class ServiceNotFound extends RuntimeException implements NotFound
 {
     public static function noServiceNamed(string $serviceName) : NotFound
     {

@@ -7,7 +7,7 @@ namespace Stratadox\Di\Exception;
 use RuntimeException;
 use function sprintf;
 
-class DependenciesCannotBeCircular extends RuntimeException implements InvalidServiceDefinition
+final class DependenciesCannotBeCircular extends RuntimeException implements InvalidServiceDefinition
 {
     public static function loopDetectedIn($serviceName) : DependenciesCannotBeCircular
     {

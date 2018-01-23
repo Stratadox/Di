@@ -9,7 +9,7 @@ use Closure;
 use Stratadox\Di\Exception\InvalidServiceDefinition;
 use Stratadox\Di\Exception\ServiceNotFound;
 
-class ArrayAdapter implements ArrayAccess
+final class ArrayAdapter implements ArrayAccess
 {
     protected $container;
 

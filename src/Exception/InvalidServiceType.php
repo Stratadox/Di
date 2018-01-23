@@ -7,7 +7,7 @@ namespace Stratadox\Di\Exception;
 use RuntimeException;
 use function sprintf;
 
-class InvalidServiceType extends RuntimeException implements InvalidServiceDefinition
+final class InvalidServiceType extends RuntimeException implements InvalidServiceDefinition
 {
     public static function serviceIsNotOfType(
         string $serviceName,

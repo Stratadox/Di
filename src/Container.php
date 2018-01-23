@@ -13,7 +13,7 @@ use Stratadox\Di\Exception\InvalidServiceType;
 use Stratadox\Di\Exception\ServiceNotFound;
 use Throwable;
 
-class Container implements ContainerInterface, PsrContainerInterface
+final class Container implements ContainerInterface, PsrContainerInterface
 {
     protected $remember = [];
     protected $factoryFor = [];
@@ -60,7 +60,7 @@ class Container implements ContainerInterface, PsrContainerInterface
     }
 
     /** @throws InvalidServiceDefinition */
-    protected function load(string $theService)
+    private function load(string $theService)
     {
         if (isset($this->isCurrentlyResolving[$theService])) {
             throw DependenciesCannotBeCircular::loopDetectedIn($theService);

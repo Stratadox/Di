@@ -8,7 +8,7 @@ use RuntimeException;
 use function sprintf;
 use Throwable;
 
-class InvalidFactory extends RuntimeException implements InvalidServiceDefinition
+final class InvalidFactory extends RuntimeException implements InvalidServiceDefinition
 {
     public static function threwException(
         string $serviceName,
