@@ -3,31 +3,50 @@
 namespace Stratadox\Di;
 
 use Closure;
+use Stratadox\Di\Exception\InvalidServiceDefinition;
+use Stratadox\Di\Exception\ServiceNotFound;
 
 interface ContainerInterface
 {
     /**
-     * @param string $service
-     * @param Closure $factory
-     * @param bool $cache
+     * Register a service to the container.
+     *
+     * @param string $service   The name of the service to register
+     * @param Closure $factory  The function that produces the service
+     * @param bool $cache       Whether or nor to cache the service
+     *
+     * @return void
      */
     public function set(string $service, Closure $factory, bool $cache = true);
 
     /**
-     * @param string $service
-     * @param string $type
-     * @return mixed
+     * Retrieve a service from the container.
+     *
+     * @param string $service   The name of the service to retrieve
+     * @param string $type      The type (interface or scalar) requirement
+     *
+     * @return mixed            The service object
+     *
+     * @throws InvalidServiceDefinition
+     * @throws ServiceNotFound
      */
     public function get($service, string $type = '');
 
     /**
-     * @param string $service
-     * @return boolean
+     * Check whether a service is registered.
+     *
+     * @param string $service   The name of the service to check for
+     *
+     * @return boolean          Whether or not the service exists
      */
     public function has($service) : bool;
 
     /**
-     * @param string $service
+     * Remove a service from the container.
+     *
+     * @param string $service   The name of the service to remove
+     *
+     * @return void
      */
     public function forget(string $service);
 }

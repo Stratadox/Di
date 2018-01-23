@@ -18,10 +18,7 @@ class Container implements ContainerInterface, PsrContainerInterface
     protected $mustReload = [];
     protected $isCurrentlyResolving = [];
 
-    /**
-     * @throws InvalidServiceDefinition
-     * @throws ServiceNotFound
-     */
+    /** @inheritdoc */
     public function get($theService, string $mustHaveThisType = '')
     {
         $this->mustKnowAbout($theService);
@@ -35,11 +32,13 @@ class Container implements ContainerInterface, PsrContainerInterface
         return $ourService;
     }
 
+    /** @inheritdoc */
     public function has($theService) : bool
     {
         return isset($this->factoryFor[$theService]);
     }
 
+    /** @inheritdoc */
     public function set(
         string $theService,
         Closure $producingTheService,
@@ -50,6 +49,7 @@ class Container implements ContainerInterface, PsrContainerInterface
         $this->mustReload[$theService] = !$cache;
     }
 
+    /** @inheritdoc */
     public function forget(string $theService)
     {
         unset($this->remember[$theService]);
