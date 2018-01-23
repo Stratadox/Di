@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Stratadox\Di\Exception;
 
-use Throwable;
+use RuntimeException;
+use function sprintf;
 
-class InvalidServiceType extends InvalidFactory
+class InvalidServiceType extends RuntimeException implements InvalidServiceDefinition
 {
     public static function serviceIsNotOfType(
         string $serviceName,
         string $expectedType
-    ) : Throwable
+    ) : InvalidServiceDefinition
     {
         return new static(sprintf(
             'Service %s is not of type %s',

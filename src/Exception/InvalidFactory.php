@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stratadox\Di\Exception;
 
 use RuntimeException;
+use function sprintf;
 use Throwable;
 
 class InvalidFactory extends RuntimeException implements InvalidServiceDefinition
