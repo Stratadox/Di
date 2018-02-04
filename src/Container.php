@@ -20,7 +20,6 @@ final class Container implements ContainerInterface, PsrContainerInterface
     protected $mustReload = [];
     protected $isCurrentlyResolving = [];
 
-    /** @inheritdoc */
     public function get($theService, string $mustHaveThisType = '')
     {
         $this->mustKnowAbout($theService);
@@ -34,13 +33,11 @@ final class Container implements ContainerInterface, PsrContainerInterface
         return $ourService;
     }
 
-    /** @inheritdoc */
     public function has($theService) : bool
     {
         return isset($this->factoryFor[$theService]);
     }
 
-    /** @inheritdoc */
     public function set(
         string $theService,
         Closure $producingTheService,
@@ -52,7 +49,6 @@ final class Container implements ContainerInterface, PsrContainerInterface
         $this->mustReload[$theService] = !$cache;
     }
 
-    /** @inheritdoc */
     public function forget(string $theService) : void
     {
         unset($this->remember[$theService]);
