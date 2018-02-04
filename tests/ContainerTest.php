@@ -17,6 +17,13 @@ use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
 use Throwable;
 
+/**
+ * @covers \Stratadox\Di\Container
+ * @covers \Stratadox\Di\Exception\DependenciesCannotBeCircular
+ * @covers \Stratadox\Di\Exception\InvalidFactory
+ * @covers \Stratadox\Di\Exception\InvalidServiceType
+ * @covers \Stratadox\Di\Exception\ServiceNotFound
+ */
 class ContainerTest extends TestCase
 {
     /** @scenario */

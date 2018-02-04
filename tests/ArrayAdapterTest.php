@@ -9,6 +9,9 @@ use Stratadox\Di\ArrayAdapter;
 use Stratadox\Di\Container;
 use Stratadox\Di\Test\Stub\Foo;
 
+/**
+ * @covers \Stratadox\Di\ArrayAdapter
+ */
 class ArrayAdapterTest extends TestCase
 {
     /** @scenario */
