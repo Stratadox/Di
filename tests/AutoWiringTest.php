@@ -148,14 +148,13 @@ class AutoWiringTest extends TestCase
         $this->assertFalse(AutoWiring::the(new Container)->has($notAnInterface));
     }
 
+    // Data Providers
+
     public function classes() : array
     {
         return [
             'Foo' => [Foo::class],
             'Bar' => [Bar::class],
-            'Baz' => [Baz::class],
-            'FooBar' => [FooBar::class],
-            'AutoWiring' => [AutoWiring::class],
             'Exception' => [Exception::class],
         ];
     }
@@ -174,9 +173,6 @@ class AutoWiringTest extends TestCase
         return [
             'Not Foo' => [Foo::class.'ButNotReally'],
             'Not Bar' => [Bar::class.'ButNotReally'],
-            'Not Baz' => [Baz::class.'ButNotReally'],
-            'Not FooBar' => [FooBar::class.'ButNotReally'],
-            'Not AutoWiring' => [AutoWiring::class.'ButNotReally'],
             'Not Exception' => [__NAMESPACE__.Exception::class.'ButNotReally'],
         ];
     }
