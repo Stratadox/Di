@@ -8,6 +8,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\AutoWiring;
 use Stratadox\Di\Container;
+use Stratadox\Di\ContainerInterface;
 use Stratadox\Di\Test\Stub\AnotherFoo;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
@@ -127,6 +128,16 @@ class AutoWiringTest extends TestCase
         $this->assertFalse(AutoWiring::the(new Container)->has($notAClass));
     }
 
+    /**
+     * @scenario
+     * @dataProvider interfaces
+     * @param string $interface The interface to check
+     */
+    function having_existing_interfaces(string $interface)
+    {
+        $this->assertTrue(AutoWiring::the(new Container)->has($interface));
+    }
+
     public function classes() : array
     {
         return [
@@ -136,6 +147,15 @@ class AutoWiringTest extends TestCase
             'FooBar' => [FooBar::class],
             'AutoWiring' => [AutoWiring::class],
             'Exception' => [Exception::class],
+        ];
+    }
+
+    public function interfaces() : array
+    {
+        return [
+            'BarInterface' => [BarInterface::class],
+            'FooInterface' => [FooInterface::class],
+            'ContainerInterface' => [ContainerInterface::class],
         ];
     }
 
