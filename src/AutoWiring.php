@@ -24,7 +24,7 @@ final class AutoWiring
 
     public function link(string $interface, string $class) : self
     {
-        return new self($this->container, $this->links + [$interface => $class]);
+        return new self($this->container, [$interface => $class] + $this->links);
     }
 
     public function get(string $service)
