@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stratadox\Di\Test;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\AutoWiring;
 use Stratadox\Di\Container;
@@ -104,5 +105,27 @@ class AutoWiringTest extends TestCase
 
         $this->assertSame($fooBar->foo(), $container->get(AnotherFoo::class));
         $this->assertSame($fooBar->bar(), $container->get(Bar::class));
+    }
+
+    /**
+     * @scenario
+     * @dataProvider classes
+     * @param string $class The class to check
+     */
+    function having_existing_classes(string $class)
+    {
+        $this->assertTrue(AutoWiring::the(new Container)->has($class));
+    }
+
+    public function classes() : array
+    {
+        return [
+            'Foo' => [Foo::class],
+            'Bar' => [Bar::class],
+            'Baz' => [Baz::class],
+            'FooBar' => [FooBar::class],
+            'AutoWiring' => [AutoWiring::class],
+            'Exception' => [Exception::class],
+        ];
     }
 }
