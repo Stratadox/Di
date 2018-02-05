@@ -138,6 +138,16 @@ class AutoWiringTest extends TestCase
         $this->assertTrue(AutoWiring::the(new Container)->has($interface));
     }
 
+    /**
+     * @scenario
+     * @dataProvider notInterfaces
+     * @param string $notAnInterface The interface to check
+     */
+    function not_having_non_existing_interfaces(string $notAnInterface)
+    {
+        $this->assertFalse(AutoWiring::the(new Container)->has($notAnInterface));
+    }
+
     public function classes() : array
     {
         return [
@@ -162,12 +172,21 @@ class AutoWiringTest extends TestCase
     public function notClasses() : array
     {
         return [
-            'NotFoo' => [Foo::class.'ButNotReally'],
-            'NotBar' => [Bar::class.'ButNotReally'],
-            'NotBaz' => [Baz::class.'ButNotReally'],
-            'NotFooBar' => [FooBar::class.'ButNotReally'],
-            'NotAutoWiring' => [AutoWiring::class.'ButNotReally'],
-            'NotException' => [__NAMESPACE__.Exception::class.'ButNotReally'],
+            'Not Foo' => [Foo::class.'ButNotReally'],
+            'Not Bar' => [Bar::class.'ButNotReally'],
+            'Not Baz' => [Baz::class.'ButNotReally'],
+            'Not FooBar' => [FooBar::class.'ButNotReally'],
+            'Not AutoWiring' => [AutoWiring::class.'ButNotReally'],
+            'Not Exception' => [__NAMESPACE__.Exception::class.'ButNotReally'],
+        ];
+    }
+
+    public function notInterfaces() : array
+    {
+        return [
+            'Not BarInterface' => [BarInterface::class.'ButNotReally'],
+            'Not FooInterface' => [FooInterface::class.'ButNotReally'],
+            'Not ContainerInterface' => [ContainerInterface::class.'ButNotReally'],
         ];
     }
 }
