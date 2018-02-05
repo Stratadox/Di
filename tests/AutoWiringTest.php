@@ -7,6 +7,7 @@ namespace Stratadox\Di\Test;
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\AutoWiring;
 use Stratadox\Di\Container;
+use Stratadox\Di\Test\Stub\AnotherFoo;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
@@ -63,30 +64,45 @@ class AutoWiringTest extends TestCase
     }
 
     /** @scenario */
-   function retrieving_the_linked_implementation_of_an_interface()
-   {
-       $container = new Container;
-       $autoWiring = AutoWiring::the($container)
-           ->link(BarInterface::class, Bar::class);
+    function retrieving_the_linked_implementation_of_an_interface()
+    {
+        $container = new Container;
+        $autoWiring = AutoWiring::the($container)
+            ->link(BarInterface::class, Bar::class);
 
-       $bar = $autoWiring->get(BarInterface::class);
+        $bar = $autoWiring->get(BarInterface::class);
 
-       $this->assertInstanceOf(Bar::class, $bar);
-       $this->assertSame($bar, $container->get(Bar::class));
-       $this->assertSame($bar, $container->get(BarInterface::class));
-   }
+        $this->assertInstanceOf(Bar::class, $bar);
+        $this->assertSame($bar, $container->get(Bar::class));
+        $this->assertSame($bar, $container->get(BarInterface::class));
+    }
 
-   /** @scenario */
-   function retrieving_a_service_that_depends_on_two_interfaces()
-   {
-       $container = new Container;
-       $autoWiring = AutoWiring::the($container)
-           ->link(FooInterface::class, Foo::class)
-           ->link(BarInterface::class, Bar::class);
+    /** @scenario */
+    function retrieving_a_service_that_depends_on_two_interfaces()
+    {
+        $container = new Container;
+        $autoWiring = AutoWiring::the($container)
+             ->link(FooInterface::class, Foo::class)
+             ->link(BarInterface::class, Bar::class);
 
-       $fooBar = $autoWiring->get(FooBar::class);
+        $fooBar = $autoWiring->get(FooBar::class);
 
-       $this->assertSame($fooBar->foo(), $container->get(Foo::class));
-       $this->assertSame($fooBar->bar(), $container->get(Bar::class));
-   }
+        $this->assertSame($fooBar->foo(), $container->get(Foo::class));
+        $this->assertSame($fooBar->bar(), $container->get(Bar::class));
+    }
+
+    /** @scenario */
+    function overwriting_an_interface_link()
+    {
+        $container = new Container;
+        $autoWiring = AutoWiring::the($container)
+            ->link(FooInterface::class, Foo::class)
+            ->link(BarInterface::class, Bar::class)
+            ->link(FooInterface::class, AnotherFoo::class);
+
+        $fooBar = $autoWiring->get(FooBar::class);
+
+        $this->assertSame($fooBar->foo(), $container->get(AnotherFoo::class));
+        $this->assertSame($fooBar->bar(), $container->get(Bar::class));
+    }
 }
