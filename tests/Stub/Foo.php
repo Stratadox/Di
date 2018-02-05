@@ -2,7 +2,7 @@
 
 namespace Stratadox\Di\Test\Stub;
 
-class Foo
+class Foo implements FooInterface
 {
     public function doSomething()
     {

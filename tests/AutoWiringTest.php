@@ -11,6 +11,8 @@ use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
+use Stratadox\Di\Test\Stub\FooBar;
+use Stratadox\Di\Test\Stub\FooInterface;
 
 /**
  * @covers \Stratadox\Di\AutoWiring
@@ -72,5 +74,19 @@ class AutoWiringTest extends TestCase
        $this->assertInstanceOf(Bar::class, $bar);
        $this->assertSame($bar, $container->get(Bar::class));
        $this->assertSame($bar, $container->get(BarInterface::class));
+   }
+
+   /** @scenario */
+   function retrieving_a_service_that_depends_on_two_interfaces()
+   {
+       $container = new Container;
+       $autoWiring = AutoWiring::the($container)
+           ->link(FooInterface::class, Foo::class)
+           ->link(BarInterface::class, Bar::class);
+
+       $fooBar = $autoWiring->get(FooBar::class);
+
+       $this->assertSame($fooBar->foo(), $container->get(Foo::class));
+       $this->assertSame($fooBar->bar(), $container->get(Bar::class));
    }
 }
