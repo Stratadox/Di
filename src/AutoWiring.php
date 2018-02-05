@@ -35,6 +35,11 @@ final class AutoWiring
         return $this->container->get($service);
     }
 
+    public function has(string $service) : bool
+    {
+        return true;
+    }
+
     private function resolve(string $service)
     {
         if (interface_exists($service)) {
