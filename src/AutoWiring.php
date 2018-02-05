@@ -9,15 +9,22 @@ use ReflectionClass;
 final class AutoWiring
 {
     private $container;
+    private $links;
 
-    private function __construct(ContainerInterface $container)
+    private function __construct(ContainerInterface $container, array $links)
     {
         $this->container = $container;
+        $this->links = $links;
     }
 
     public static function the(ContainerInterface $container) : self
     {
         return new self($container, []);
+    }
+
+    public function link(string $interface, string $class) : self
+    {
+        return new self($this->container, [$interface => $class]);
     }
 
     public function get(string $service)
@@ -29,6 +36,24 @@ final class AutoWiring
     }
 
     private function resolve(string $service)
+    {
+        if (interface_exists($service)) {
+            $this->resolveInterface($service);
+        } else {
+            $this->resolveClass($service);
+        }
+    }
+
+    private function resolveInterface(string $service)
+    {
+        $class = $this->links[$service];
+        $this->resolveClass($class);
+        $this->container->set($service, function () use ($class) {
+            return $this->container->get($class);
+        });
+    }
+
+    private function resolveClass(string $service)
     {
         $constructor = (new ReflectionClass($service))->getConstructor();
         $dependencies = [];
