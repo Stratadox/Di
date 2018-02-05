@@ -117,6 +117,16 @@ class AutoWiringTest extends TestCase
         $this->assertTrue(AutoWiring::the(new Container)->has($class));
     }
 
+    /**
+     * @scenario
+     * @dataProvider notClasses
+     * @param string $notAClass The class to check
+     */
+    function not_having_non_existing_classes(string $notAClass)
+    {
+        $this->assertFalse(AutoWiring::the(new Container)->has($notAClass));
+    }
+
     public function classes() : array
     {
         return [
@@ -126,6 +136,18 @@ class AutoWiringTest extends TestCase
             'FooBar' => [FooBar::class],
             'AutoWiring' => [AutoWiring::class],
             'Exception' => [Exception::class],
+        ];
+    }
+
+    public function notClasses() : array
+    {
+        return [
+            'NotFoo' => [Foo::class.'ButNotReally'],
+            'NotBar' => [Bar::class.'ButNotReally'],
+            'NotBaz' => [Baz::class.'ButNotReally'],
+            'NotFooBar' => [FooBar::class.'ButNotReally'],
+            'NotAutoWiring' => [AutoWiring::class.'ButNotReally'],
+            'NotException' => [__NAMESPACE__.Exception::class.'ButNotReally'],
         ];
     }
 }
