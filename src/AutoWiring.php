@@ -37,7 +37,7 @@ final class AutoWiring
 
     public function has(string $service) : bool
     {
-        return class_exists($service);
+        return class_exists($service) || interface_exists($service);
     }
 
     private function resolve(string $service)
