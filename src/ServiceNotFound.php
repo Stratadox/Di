@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stratadox\Di\Exception;
+namespace Stratadox\Di;
 
 use Psr\Container\NotFoundExceptionInterface as NotFound;
 use RuntimeException;

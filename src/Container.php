@@ -6,11 +6,6 @@ namespace Stratadox\Di;
 
 use Closure;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
-use Stratadox\Di\Exception\DependenciesCannotBeCircular;
-use Stratadox\Di\Exception\InvalidFactory;
-use Stratadox\Di\Exception\InvalidServiceDefinition;
-use Stratadox\Di\Exception\InvalidServiceType;
-use Stratadox\Di\Exception\ServiceNotFound;
 use Throwable;
 
 final class Container implements ContainerInterface, PsrContainerInterface
@@ -63,6 +58,7 @@ final class Container implements ContainerInterface, PsrContainerInterface
             throw DependenciesCannotBeCircular::loopDetectedIn($theService);
         }
         $this->isCurrentlyResolving[$theService] = true;
+
         $makeTheService = $this->factoryFor[$theService];
         try {
             return $makeTheService();

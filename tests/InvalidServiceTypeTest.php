@@ -6,13 +6,13 @@ namespace Stratadox\Di\Test;
 
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\Container;
-use Stratadox\Di\Exception\InvalidServiceType;
+use Stratadox\Di\InvalidServiceType;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\Foo;
 
 /**
  * @covers \Stratadox\Di\Container
- * @covers \Stratadox\Di\Exception\InvalidServiceType
+ * @covers \Stratadox\Di\InvalidServiceType
  */
 class InvalidServiceTypeTest extends TestCase
 {

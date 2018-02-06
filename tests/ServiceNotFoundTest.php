@@ -7,11 +7,11 @@ namespace Stratadox\Di\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
 use Stratadox\Di\Container;
-use Stratadox\Di\Exception\ServiceNotFound;
+use Stratadox\Di\ServiceNotFound;
 
 /**
  * @covers \Stratadox\Di\Container
- * @covers \Stratadox\Di\Exception\ServiceNotFound
+ * @covers \Stratadox\Di\ServiceNotFound
  */
 class ServiceNotFoundTest extends TestCase
 {

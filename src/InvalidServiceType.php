@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stratadox\Di\Exception;
+namespace Stratadox\Di;
 
 use RuntimeException;
 use function sprintf;

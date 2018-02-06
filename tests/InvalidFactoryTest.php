@@ -6,15 +6,15 @@ namespace Stratadox\Di\Test;
 
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\Container;
-use Stratadox\Di\Exception\InvalidFactory;
+use Stratadox\Di\InvalidFactory;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
 
 /**
  * @covers \Stratadox\Di\Container
- * @covers \Stratadox\Di\Exception\InvalidFactory
- * @covers \Stratadox\Di\Exception\DependenciesCannotBeCircular
+ * @covers \Stratadox\Di\InvalidFactory
+ * @covers \Stratadox\Di\DependenciesCannotBeCircular
  */
 class InvalidFactoryTest extends TestCase
 {

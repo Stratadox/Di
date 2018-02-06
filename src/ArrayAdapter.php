@@ -6,8 +6,6 @@ namespace Stratadox\Di;
 
 use ArrayAccess;
 use Closure;
-use Stratadox\Di\Exception\InvalidServiceDefinition;
-use Stratadox\Di\Exception\ServiceNotFound;
 
 final class ArrayAdapter implements ArrayAccess
 {

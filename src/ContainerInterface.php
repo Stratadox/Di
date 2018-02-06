@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Stratadox\Di;
 
 use Closure;
-use Stratadox\Di\Exception\InvalidServiceDefinition;
-use Stratadox\Di\Exception\ServiceNotFound;
 
 interface ContainerInterface
 {
