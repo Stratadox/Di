@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Stratadox\Di;
 
 use Psr\Container\ContainerInterface as PsrContainerInterface;
-use ReflectionClass;
+use ReflectionClass as Reflected;
+use ReflectionException;
 use ReflectionType;
 
 final class AutoWiring implements PsrContainerInterface
@@ -46,49 +47,53 @@ final class AutoWiring implements PsrContainerInterface
 
     private function resolve(string $service)
     {
-        if (interface_exists($service)) {
-            $this->resolveInterface($service);
-        } else if(class_exists($service)) {
-            if ((new ReflectionClass($service))->isAbstract()) {
-                $this->resolveInterface($service);
-            } else {
-                $this->resolveClass($service);
-            }
-        } else {
+        try {
+            $this->resolveThe(new Reflected($service));
+        } catch (ReflectionException $exception) {
             throw ServiceNotFound::noServiceNamed($service);
         }
     }
 
-    private function resolveInterface(string $service) : void
+    private function resolveThe(Reflected $service)
     {
-        if (!isset($this->links[$service])) {
+        if ($service->isAbstract() || $service->isInterface()) {
+            $this->resolveAbstract($service);
+        } else {
+            $this->resolveClass($service);
+        }
+    }
+
+    private function resolveAbstract(Reflected $service) : void
+    {
+        $name = $service->getName();
+        if (!isset($this->links[$name])) {
             throw CannotResolveAbstractType::noLinkDefinedFor($service);
         }
-        $class = $this->links[$service];
-        $this->resolveClass($class);
-        $this->container->set($service, function () use ($class) {
+        $class = $this->links[$name];
+        $this->resolveClass(new Reflected($class));
+        $this->container->set($name, function () use ($class) {
             return $this->container->get($class);
         });
     }
 
-    private function resolveClass(string $service) : void
+    private function resolveClass(Reflected $service) : void
     {
-        $constructor = (new ReflectionClass($service))->getConstructor();
+        $name = $service->getName();
+        $constructor = $service->getConstructor();
         $dependencies = [];
         if (isset($constructor)) {
             foreach ($constructor->getParameters() as $parameter) {
                 $dependencies[] = $this->handleDependency($parameter->getType());
             }
         }
-        $this->container->set($service,
-            function () use ($service, $dependencies) {
-                $parameters = [];
-                foreach ($dependencies as $dependency) {
-                    $parameters[] = $this->container->get($dependency);
-                }
-                return new $service(...$parameters);
+        $container = $this->container;
+        $container->set($name, function () use ($name, $dependencies, $container) {
+            $parameters = [];
+            foreach ($dependencies as $dependency) {
+                $parameters[] = $container->get($dependency);
             }
-        );
+            return new $name(...$parameters);
+        });
     }
 
     private function handleDependency(ReflectionType $theType) : string
