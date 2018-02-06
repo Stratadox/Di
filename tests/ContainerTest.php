@@ -6,11 +6,7 @@ namespace Stratadox\Di\Test;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\NotFoundExceptionInterface;
 use Stratadox\Di\Container;
-use Stratadox\Di\Exception\InvalidFactory;
-use Stratadox\Di\Exception\InvalidServiceType;
-use Stratadox\Di\Exception\ServiceNotFound;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
@@ -19,10 +15,6 @@ use Throwable;
 
 /**
  * @covers \Stratadox\Di\Container
- * @covers \Stratadox\Di\Exception\DependenciesCannotBeCircular
- * @covers \Stratadox\Di\Exception\InvalidFactory
- * @covers \Stratadox\Di\Exception\InvalidServiceType
- * @covers \Stratadox\Di\Exception\ServiceNotFound
  */
 class ContainerTest extends TestCase
 {
@@ -125,40 +117,6 @@ class ContainerTest extends TestCase
     }
 
     /** @scenario */
-    function throwing_an_exception_when_a_factory_is_invalid()
-    {
-        $di = new Container();
-        $di->set('baz', function () use ($di) {
-            return new Baz($di->get('foo', Foo::class));
-        });
-        $di->set('foo', function () {
-            return new Bar();
-        });
-
-        // Invalid because service 'foo' has a Bar, not a Foo
-        $this->expectException(InvalidFactory::class);
-        $di->get('baz');
-    }
-
-    /** @scenario */
-    function throwing_an_exception_when_a_service_does_not_exist()
-    {
-        $di = new Container();
-
-        $this->expectException(ServiceNotFound::class);
-        $di->get('foo');
-    }
-
-    /** @scenario */
-    function using_the_psr_interface_when_a_service_does_not_exist()
-    {
-        $di = new Container();
-
-        $this->expectException(NotFoundExceptionInterface::class);
-        $di->get('foo');
-    }
-
-    /** @scenario */
     function caching_the_instances_for_future_use()
     {
         $di = new Container();
@@ -200,18 +158,6 @@ class ContainerTest extends TestCase
     }
 
     /** @scenario */
-    function throwing_an_exception_when_an_interface_constraint_is_not_met()
-    {
-        $di = new Container();
-        $di->set('bar', function () {
-            return new Bar();
-        });
-
-        $this->expectException(InvalidServiceType::class);
-        $di->get('bar', Foo::class);
-    }
-
-    /** @scenario */
     function looking_up_a_service_with_a_scalar_constraint()
     {
         $di = new Container();
@@ -220,18 +166,6 @@ class ContainerTest extends TestCase
         });
 
         $this->assertSame('Hello world!', $di->get('string', 'string'));
-    }
-
-    /** @scenario */
-    function throwing_an_exception_when_a_scalar_constraint_is_not_met()
-    {
-        $di = new Container();
-        $di->set('string', function () {
-            return 'Hello world!';
-        });
-
-        $this->expectException(InvalidServiceType::class);
-        $di->get('string', 'double');
     }
 
     /** @scenario */
@@ -247,36 +181,6 @@ class ContainerTest extends TestCase
         $di->forget('foo');
 
         $this->assertFalse($di->has('foo'));
-    }
-
-    /** @scenario */
-    function throwing_an_exception_when_a_factory_tries_to_infinitely_copy_itself()
-    {
-        $di = new Container();
-        $di->set('foo', function () use ($di) {
-            return $di->get('foo');
-        });
-
-        $this->expectException(InvalidFactory::class);
-        $di->get('foo');
-    }
-
-    /** @scenario */
-    function throwing_an_exception_when_factories_try_to_infinitely_copy_each_other()
-    {
-        $di = new Container();
-        $di->set('foo', function () use ($di) {
-            return $di->get('bar');
-        });
-        $di->set('bar', function () use ($di) {
-            return $di->get('baz');
-        });
-        $di->set('baz', function () use ($di) {
-            return $di->get('foo');
-        });
-
-        $this->expectException(InvalidFactory::class);
-        $di->get('foo');
     }
 
     /** @scenario */
