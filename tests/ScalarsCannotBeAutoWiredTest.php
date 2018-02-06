@@ -16,7 +16,7 @@ use Stratadox\Di\Test\Stub\Qux;
  */
 class ScalarsCannotBeAutoWiredTest extends TestCase
 {
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_trying_to_autowire_a_class_with_scalar_dependencies()
     {
         $di = AutoWiring::the(new Container);

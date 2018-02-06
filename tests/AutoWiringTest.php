@@ -22,7 +22,7 @@ use Stratadox\Di\Test\Stub\FooInterface;
  */
 class AutoWiringTest extends TestCase
 {
-    /** @scenario */
+    /** @test */
     function loading_a_service_without_explicitly_adding_it()
     {
         $container = AutoWiring::the(new Container);
@@ -30,7 +30,7 @@ class AutoWiringTest extends TestCase
         $this->assertInstanceOf(Foo::class, $container->get(Foo::class));
     }
 
-    /** @scenario */
+    /** @test */
     function adding_the_auto_wired_service_to_the_container()
     {
         $container = new Container;
@@ -41,7 +41,7 @@ class AutoWiringTest extends TestCase
         $this->assertSame($foo, $container->get(Foo::class));
     }
 
-    /** @scenario */
+    /** @test */
     function adding_the_dependency_to_the_container_when_getting_the_service()
     {
         $container = new Container;
@@ -51,7 +51,7 @@ class AutoWiringTest extends TestCase
         $this->assertTrue($container->has(Foo::class));
     }
 
-    /** @scenario */
+    /** @test */
     function using_the_service_from_the_underlying_container()
     {
         $container = new Container;
@@ -65,7 +65,7 @@ class AutoWiringTest extends TestCase
         $this->assertSame($foo, $autoWiring->get(Foo::class));
     }
 
-    /** @scenario */
+    /** @test */
     function retrieving_the_linked_implementation_of_an_interface()
     {
         $container = new Container;
@@ -79,7 +79,7 @@ class AutoWiringTest extends TestCase
         $this->assertSame($bar, $container->get(BarInterface::class));
     }
 
-    /** @scenario */
+    /** @test */
     function retrieving_a_service_that_depends_on_two_interfaces()
     {
         $container = new Container;
@@ -93,7 +93,7 @@ class AutoWiringTest extends TestCase
         $this->assertSame($fooBar->bar(), $container->get(Bar::class));
     }
 
-    /** @scenario */
+    /** @test */
     function overwriting_an_interface_link()
     {
         $container = new Container;

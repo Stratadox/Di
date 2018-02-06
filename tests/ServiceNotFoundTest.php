@@ -17,7 +17,7 @@ use Stratadox\Di\ServiceNotFound;
  */
 class ServiceNotFoundTest extends TestCase
 {
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_a_service_does_not_exist()
     {
         $di = new Container();
@@ -26,7 +26,7 @@ class ServiceNotFoundTest extends TestCase
         $di->get('foo');
     }
 
-    /** @scenario */
+    /** @test */
     function using_the_psr_interface_when_a_service_does_not_exist()
     {
         $di = new Container();
@@ -35,7 +35,7 @@ class ServiceNotFoundTest extends TestCase
         $di->get('foo');
     }
 
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_a_service_or_autowired_class_does_not_exist()
     {
         $di = AutoWiring::the(new Container);

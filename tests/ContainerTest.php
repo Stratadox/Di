@@ -18,7 +18,7 @@ use Throwable;
  */
 class ContainerTest extends TestCase
 {
-    /** @scenario */
+    /** @test */
     function indicating_that_a_service_is_known()
     {
         $di = new Container();
@@ -29,14 +29,14 @@ class ContainerTest extends TestCase
         $this->assertTrue($di->has('foo'));
     }
 
-    /** @scenario */
+    /** @test */
     function indicating_that_a_service_is_not_known()
     {
         $di = new Container();
         $this->assertFalse($di->has('foo'));
     }
 
-    /** @scenario */
+    /** @test */
     function looking_up_a_registered_service()
     {
         $di = new Container();
@@ -49,7 +49,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Foo::class, $foo);
     }
 
-    /** @scenario */
+    /** @test */
     function looking_up_multiple_registered_services()
     {
         $di = new Container();
@@ -64,7 +64,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Bar::class, $di->get('bar'));
     }
 
-    /** @scenario */
+    /** @test */
     function overriding_a_previously_registered_service()
     {
         $di = new Container();
@@ -78,7 +78,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Foo::class, $di->get('foo'));
     }
 
-    /** @scenario */
+    /** @test */
     function composing_services_through_the_container()
     {
         $di = new Container();
@@ -92,7 +92,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Foo::class, $di->get('baz')->getFoo());
     }
 
-    /** @scenario */
+    /** @test */
     function caching_composite_services()
     {
         $di = new Container();
@@ -116,7 +116,7 @@ class ContainerTest extends TestCase
         $this->assertSame($baz1, $baz2);
     }
 
-    /** @scenario */
+    /** @test */
     function caching_the_instances_for_future_use()
     {
         $di = new Container();
@@ -130,7 +130,7 @@ class ContainerTest extends TestCase
         $this->assertSame($bar1, $bar2);
     }
 
-    /** @scenario */
+    /** @test */
     function not_caching_the_instances_that_have_caching_disabled()
     {
         $di = new Container();
@@ -144,7 +144,7 @@ class ContainerTest extends TestCase
         $this->assertNotSame($bar1, $bar2);
     }
 
-    /** @scenario */
+    /** @test */
     function looking_up_a_service_with_an_interface_constraint()
     {
         $di = new Container();
@@ -157,7 +157,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(BarInterface::class, $bar);
     }
 
-    /** @scenario */
+    /** @test */
     function looking_up_a_service_with_a_scalar_constraint()
     {
         $di = new Container();
@@ -168,7 +168,7 @@ class ContainerTest extends TestCase
         $this->assertSame('Hello world!', $di->get('string', 'string'));
     }
 
-    /** @scenario */
+    /** @test */
     function indicating_that_a_forgotten_service_does_not_exist_anymore()
     {
         $di = new Container();
@@ -183,7 +183,7 @@ class ContainerTest extends TestCase
         $this->assertFalse($di->has('foo'));
     }
 
-    /** @scenario */
+    /** @test */
     function factories_that_forget_themselves_produce_once_and_quit_forever()
     {
         $di = new Container();
@@ -196,7 +196,7 @@ class ContainerTest extends TestCase
         $this->assertFalse($di->has('foo'));
     }
 
-    /** @scenario */
+    /** @test */
     function allowing_a_factory_to_produce_the_container_it_is_in()
     {
         $di = new Container();
@@ -206,7 +206,7 @@ class ContainerTest extends TestCase
         $this->assertSame($di, $di->get('di'));
     }
 
-    /** @scenario */
+    /** @test */
     function recovering_into_a_workable_state_after_encountering_an_exception()
     {
         $di = new Container();

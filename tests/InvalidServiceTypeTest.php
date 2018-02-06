@@ -16,7 +16,7 @@ use Stratadox\Di\Test\Stub\Foo;
  */
 class InvalidServiceTypeTest extends TestCase
 {
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_a_scalar_constraint_is_not_met()
     {
         $di = new Container();
@@ -28,7 +28,7 @@ class InvalidServiceTypeTest extends TestCase
         $di->get('string', 'double');
     }
 
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_an_interface_constraint_is_not_met()
     {
         $di = new Container();

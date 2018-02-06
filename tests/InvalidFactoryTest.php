@@ -18,7 +18,7 @@ use Stratadox\Di\Test\Stub\Foo;
  */
 class InvalidFactoryTest extends TestCase
 {
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_a_factory_is_invalid()
     {
         $di = new Container();
@@ -34,7 +34,7 @@ class InvalidFactoryTest extends TestCase
         $di->get('baz');
     }
 
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_a_factory_tries_to_infinitely_copy_itself()
     {
         $di = new Container();
@@ -46,7 +46,7 @@ class InvalidFactoryTest extends TestCase
         $di->get('foo');
     }
 
-    /** @scenario */
+    /** @test */
     function throwing_an_exception_when_factories_try_to_infinitely_copy_each_other()
     {
         $di = new Container();
