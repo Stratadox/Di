@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Stratadox\Di;
 
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use ReflectionClass;
 
-final class AutoWiring implements ContainerInterface
+final class AutoWiring implements PsrContainerInterface
 {
     private $container;
     private $links;
