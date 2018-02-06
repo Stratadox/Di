@@ -130,7 +130,7 @@ class AutoWiringTest extends TestCase
     /**
      * @scenario
      * @dataProvider classes
-     * @param string $class The class to check
+     * @param string $class The class to check.
      */
     function having_existing_classes(string $class)
     {
@@ -140,7 +140,7 @@ class AutoWiringTest extends TestCase
     /**
      * @scenario
      * @dataProvider notClasses
-     * @param string $notAClass The class to check
+     * @param string $notAClass The class to check.
      */
     function not_having_non_existing_classes(string $notAClass)
     {
@@ -150,17 +150,31 @@ class AutoWiringTest extends TestCase
     /**
      * @scenario
      * @dataProvider interfaces
-     * @param string $interface The interface to check
+     * @param string $interface The interface to check.
      */
-    function having_existing_interfaces(string $interface)
+    function not_having_existing_but_unlinked_interfaces(string $interface)
     {
-        $this->assertTrue(AutoWiring::the(new Container)->has($interface));
+        $this->assertFalse(AutoWiring::the(new Container)->has($interface));
+    }
+
+    /**
+     * @scenario
+     * @dataProvider interfacesAndClasses
+     * @param string $interface      The interface to check.
+     * @param string $implementation The implementation to link.
+     */
+    function having_linked_interfaces(string $interface, string $implementation)
+    {
+        $container = AutoWiring::the(new Container)
+            ->link($interface, $implementation);
+
+        $this->assertTrue($container->has($interface));
     }
 
     /**
      * @scenario
      * @dataProvider notInterfaces
-     * @param string $notAnInterface The interface to check
+     * @param string $notAnInterface The interface to check.
      */
     function not_having_non_existing_interfaces(string $notAnInterface)
     {
@@ -170,7 +184,7 @@ class AutoWiringTest extends TestCase
     /**
      * @scenario
      * @dataProvider notInterfaces
-     * @param string $notAnInterface The interface to check
+     * @param string $notAnInterface The interface to check.
      */
     function always_having_whatever_the_container_has(string $notAnInterface)
     {
@@ -196,6 +210,14 @@ class AutoWiringTest extends TestCase
             'BarInterface' => [BarInterface::class],
             'FooInterface' => [FooInterface::class],
             'ContainerInterface' => [ContainerInterface::class],
+        ];
+    }
+
+    public function interfacesAndClasses() : array
+    {
+        return [
+            'BarInterface' => [BarInterface::class, Bar::class],
+            'FooInterface' => [FooInterface::class, Foo::class],
         ];
     }
 
