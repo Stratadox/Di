@@ -148,6 +148,18 @@ class AutoWiringTest extends TestCase
         $this->assertFalse(AutoWiring::the(new Container)->has($notAnInterface));
     }
 
+    /**
+     * @scenario
+     * @dataProvider notInterfaces
+     * @param string $notAnInterface The interface to check
+     */
+    function always_having_whatever_the_container_has(string $notAnInterface)
+    {
+        $container = new Container;
+        $container->set($notAnInterface, function () { return "That's ok."; });
+        $this->assertTrue(AutoWiring::the($container)->has($notAnInterface));
+    }
+
     // Data Providers
 
     public function classes() : array
