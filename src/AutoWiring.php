@@ -6,6 +6,7 @@ namespace Stratadox\Di;
 
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use ReflectionClass;
+use ReflectionType;
 
 final class AutoWiring implements PsrContainerInterface
 {
@@ -69,12 +70,7 @@ final class AutoWiring implements PsrContainerInterface
         $dependencies = [];
         if (isset($constructor)) {
             foreach ($constructor->getParameters() as $parameter) {
-                $dependency = $parameter->getType();
-                if ($dependency->isBuiltin()) {
-                    throw new ScalarsCannotBeAutoWired;
-                }
-                $this->resolve((string) $dependency);
-                $dependencies[] = (string) $dependency;
+                $dependencies[] = $this->handleDependency($parameter->getType());
             }
         }
         $this->container->set($service,
@@ -86,5 +82,15 @@ final class AutoWiring implements PsrContainerInterface
                 return new $service(...$parameters);
             }
         );
+    }
+
+    private function handleDependency(ReflectionType $type) : string
+    {
+        if ($type->isBuiltin()) {
+            throw new ScalarsCannotBeAutoWired;
+        }
+        $dependency = (string) $type;
+        $this->resolve($dependency);
+        return $dependency;
     }
 }
