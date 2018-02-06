@@ -47,12 +47,14 @@ final class AutoWiring implements PsrContainerInterface
     {
         if (interface_exists($service)) {
             $this->resolveInterface($service);
-        } else {
+        } else if(class_exists($service)) {
             $this->resolveClass($service);
+        } else {
+            throw ServiceNotFound::noServiceNamed($service);
         }
     }
 
-    private function resolveInterface(string $service)
+    private function resolveInterface(string $service) : void
     {
         $class = $this->links[$service];
         $this->resolveClass($class);
@@ -61,7 +63,7 @@ final class AutoWiring implements PsrContainerInterface
         });
     }
 
-    private function resolveClass(string $service)
+    private function resolveClass(string $service) : void
     {
         $constructor = (new ReflectionClass($service))->getConstructor();
         $dependencies = [];
