@@ -69,9 +69,12 @@ final class AutoWiring implements PsrContainerInterface
         $dependencies = [];
         if (isset($constructor)) {
             foreach ($constructor->getParameters() as $parameter) {
-                $dependency = (string) $parameter->getType();
-                $this->resolve($dependency);
-                $dependencies[] = $dependency;
+                $dependency = $parameter->getType();
+                if ($dependency->isBuiltin()) {
+                    throw new ScalarsCannotBeAutoWired;
+                }
+                $this->resolve((string) $dependency);
+                $dependencies[] = (string) $dependency;
             }
         }
         $this->container->set($service,
