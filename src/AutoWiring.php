@@ -40,7 +40,7 @@ final class AutoWiring implements PsrContainerInterface
     public function has($theService) : bool
     {
         return class_exists($theService)
-            || interface_exists($theService)
+            || isset($this->links[$theService])
             || $this->container->has($theService);
     }
 
