@@ -15,7 +15,9 @@ use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
 use Stratadox\Di\Test\Stub\FooBar;
+use Stratadox\Di\Test\Stub\FooBarQux;
 use Stratadox\Di\Test\Stub\FooInterface;
+use Stratadox\Di\Test\Stub\Qux;
 
 /**
  * @covers \Stratadox\Di\AutoWiring
@@ -106,6 +108,23 @@ class AutoWiringTest extends TestCase
 
         $this->assertSame($fooBar->foo(), $container->get(AnotherFoo::class));
         $this->assertSame($fooBar->bar(), $container->get(Bar::class));
+    }
+
+    /** @test */
+    function using_the_container_service_if_available()
+    {
+        $container = new Container;
+        $container->set(Qux::class, function () {
+            return new Qux('foo');
+        });
+
+        $autoWiring = AutoWiring::the($container)
+            ->link(FooInterface::class, Foo::class)
+            ->link(BarInterface::class, Bar::class);
+
+        $fooBarQux = $autoWiring->get(FooBarQux::class);
+
+        $this->assertSame($container->get(Qux::class), $fooBarQux->qux());
     }
 
     /**
