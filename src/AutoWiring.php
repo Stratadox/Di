@@ -84,13 +84,15 @@ final class AutoWiring implements PsrContainerInterface
         );
     }
 
-    private function handleDependency(ReflectionType $type) : string
+    private function handleDependency(ReflectionType $theType) : string
     {
-        if ($type->isBuiltin()) {
+        if ($theType->isBuiltin()) {
             throw new ScalarsCannotBeAutoWired;
         }
-        $dependency = (string) $type;
-        $this->resolve($dependency);
-        return $dependency;
+        $theDependency = (string) $theType;
+        if (!$this->container->has($theDependency)) {
+            $this->resolve($theDependency);
+        }
+        return $theDependency;
     }
 }
