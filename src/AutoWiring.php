@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Stratadox\Di;
 
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-final class AutoWiring
+final class AutoWiring implements ContainerInterface
 {
     private $container;
     private $links;
@@ -27,17 +28,17 @@ final class AutoWiring
         return new self($this->container, [$interface => $class] + $this->links);
     }
 
-    public function get(string $service)
+    public function get($theService)
     {
-        if (!$this->container->has($service)) {
-            $this->resolve($service);
+        if (!$this->container->has($theService)) {
+            $this->resolve($theService);
         }
-        return $this->container->get($service);
+        return $this->container->get($theService);
     }
 
-    public function has(string $service) : bool
+    public function has($theService) : bool
     {
-        return class_exists($service) || interface_exists($service);
+        return class_exists($theService) || interface_exists($theService);
     }
 
     private function resolve(string $service)
