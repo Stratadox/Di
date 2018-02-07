@@ -127,6 +127,33 @@ class AutoWiringTest extends TestCase
         $this->assertSame($container->get(Qux::class), $fooBarQux->qux());
     }
 
+    /** @test */
+    function redirecting_set_calls_to_the_container()
+    {
+        $container = new Container;
+        $autoWiring = AutoWiring::the($container);
+        $autoWiring->set(Qux::class, function () {
+            return new Qux('foo');
+        });
+
+        $this->assertTrue($container->has(Qux::class));
+        $this->assertSame($container->get(Qux::class), $autoWiring->get(Qux::class));
+    }
+
+    /** @test */
+    function redirecting_forget_calls_to_the_container()
+    {
+        $container = new Container;
+        $container->set(Qux::class, function () {
+            return new Qux('foo');
+        });
+
+        $autoWiring = AutoWiring::the($container);
+        $autoWiring->forget(Qux::class);
+
+        $this->assertFalse($container->has(Qux::class));
+    }
+
     /**
      * @scenario
      * @dataProvider classes
