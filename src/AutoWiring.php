@@ -28,6 +28,9 @@ final class AutoWiring implements ContainerInterface, PsrContainerInterface
 
     public function link(string $interface, string $class) : self
     {
+        if (!is_a($class, $interface, true)) {
+            throw InvalidServiceType::serviceIsNotOfType($class, $interface);
+        }
         return new self($this->container, [$interface => $class] + $this->links);
     }
 
