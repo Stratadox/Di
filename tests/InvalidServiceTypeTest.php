@@ -12,7 +12,7 @@ use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\FooInterface;
 
 /**
- * @covers \Stratadox\Di\Container
+ * @covers \Stratadox\Di\AutoWiring
  * @covers \Stratadox\Di\InvalidServiceType
  */
 class InvalidServiceTypeTest extends TestCase
