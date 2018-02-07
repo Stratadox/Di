@@ -145,30 +145,6 @@ class ContainerTest extends TestCase
     }
 
     /** @test */
-    function looking_up_a_service_with_an_interface_constraint()
-    {
-        $di = new Container();
-        $di->set('bar', function () {
-            return new Bar();
-        });
-
-        $bar = $di->get('bar', BarInterface::class);
-
-        $this->assertInstanceOf(BarInterface::class, $bar);
-    }
-
-    /** @test */
-    function looking_up_a_service_with_a_scalar_constraint()
-    {
-        $di = new Container();
-        $di->set('string', function () {
-            return 'Hello world!';
-        });
-
-        $this->assertSame('Hello world!', $di->get('string', 'string'));
-    }
-
-    /** @test */
     function indicating_that_a_forgotten_service_does_not_exist_anymore()
     {
         $di = new Container();
