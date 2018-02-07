@@ -20,60 +20,71 @@ composer require stratadox/di
 
 ```php
 // Create container
-$di = new Container();
+$container = new Container();
 
 // Set service
-$di->set('some_service', function () {
+$container->set('some_service', function () {
     return new SomeService();
 });
 
 // Get service
-$service = $di->get('some_service');
+$service = $container->get('some_service');
 
 // Check if service exists
-$hasService = $di->has('some_service');
+$hasService = $container->has('some_service');
 
 // Remove service
-$di->forget('some_service');
+$container->forget('some_service');
 ```
 
 Alternatively, you can use the array syntax:
 
 ```php
 // Create container
-$di = new ArrayAdapter(new Container());
+$container = new ArrayAdapter(new Container());
 
 // Set service
-$di['some_service'] = function () {
+$container['some_service'] = function () {
     return new SomeService();
 };
 
 // Get service
-$service = $di['some_service'];
+$service = $container['some_service'];
 
 // Check if service exists
-$hasService = isset($di['some_service']);
+$hasService = isset($container['some_service']);
 
 // Remove service
-unset($di['some_service']);
+unset($container['some_service']);
 ```
+
+By decorating the container with an AutoWiring object, a large portion of the 
+configuration effort can be automated:
+
+```php
+// Create container
+$container = AutoWiring::the(new Container);
+
+$foo = $container->get(Foo::class);
+```
+
 
 ## Dependent services
 
 You can construct services that use other services by passing the DI container in your anonymous function.
 
 ```php
-$di = new Container();
+$container = new Container();
 
-$di->set('collaborator', function () {
+$container->set('collaborator', function () {
     return new Collaborator();
 });
 
-$di->set('main_service', function () use ($di) {
-    return new MainService($di->get('collaborator'));
+$container->set('main_service', function () use ($container) {
+    return new MainService($container->get('collaborator'));
 });
 
-$service = $di->get('main_service');
+$service = $container->get('main_service');
 ```
 
 Because services are lazy it does not matter in which order you define them, as long they are all defined when you request one.
@@ -88,26 +99,18 @@ $dsn = 'mysql:host=localhost;dbname=testdb';
 $username = 'admin';
 $password = 'secret';
 
-$di = new Container();
-$di->set('database', function () use ($dsn, $username, $password) {
+$container = new Container();
+$container->set('database', function () use ($dsn, $username, $password) {
     return new DatabaseConnection($dsn, $username, $password);
 });
 ```
-
-## Typehinting
-
-You can assert the service to be of a certain class or implement an interface when requesting the service.
-```php
-$foo = $di->get('foo', Foo::class);
-```
-If the type assertion fails, an InvalidServiceType exception is thrown.
 
 ## Cache
 
 By default, services are cached. You can trigger the factory on each request by setting cache to false.
 ```php
 // Set service
-$di->set('some_service', function () {
+$container->set('some_service', function () {
     return new SomeService();
 }, false);
 ```
