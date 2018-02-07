@@ -15,7 +15,7 @@ final class Container implements ContainerInterface, PsrContainerInterface
     protected $mustReload = [];
     protected $isCurrentlyResolving = [];
 
-    public function get($theService, string $mustHaveThisType = '')
+    public function get($theService)
     {
         $this->mustKnowAbout($theService);
 
@@ -23,9 +23,7 @@ final class Container implements ContainerInterface, PsrContainerInterface
             $this->remember[$theService] = $this->load($theService);
         }
 
-        $ourService = $this->remember[$theService];
-        $this->typeMustCheckOut($theService, $ourService, $mustHaveThisType);
-        return $ourService;
+        return $this->remember[$theService];
     }
 
     public function has($theService) : bool
@@ -79,14 +77,5 @@ final class Container implements ContainerInterface, PsrContainerInterface
     {
         if ($this->has($theService)) return;
         throw ServiceNotFound::noServiceNamed($theService);
-    }
-
-    /** @throws InvalidServiceDefinition */
-    private function typeMustCheckOut(string $serviceName, $service, string $requiredType) : void
-    {
-        if (empty($requiredType)) return;
-        if (gettype($service) === $requiredType) return;
-        if ($service instanceof $requiredType) return;
-        throw InvalidServiceType::serviceIsNotOfType($serviceName, $requiredType);
     }
 }

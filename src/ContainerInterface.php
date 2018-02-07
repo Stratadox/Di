@@ -23,14 +23,13 @@ interface ContainerInterface
      * Retrieve a service from the container.
      *
      * @param string $service   The name of the service to retrieve
-     * @param string $type      The type (interface or scalar) requirement
      *
      * @return mixed            The service object
      *
      * @throws InvalidServiceDefinition
      * @throws ServiceNotFound
      */
-    public function get($service, string $type = '');
+    public function get($service);
 
     /**
      * Check whether a service is registered.
