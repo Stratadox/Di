@@ -20,7 +20,7 @@ composer require stratadox/di
 
 ```php
 // Create container
-$container = new Container();
+$container = new DependencyContainer();
 
 // Set service
 $container->set('some_service', function () {
@@ -41,7 +41,7 @@ Alternatively, you can use the array syntax:
 
 ```php
 // Create container
-$container = new ArrayAdapter(new Container());
+$container = new ArrayAdapter(new DependencyContainer());
 
 // Set service
 $container['some_service'] = function () {
@@ -63,7 +63,7 @@ configuration effort can be automated:
 
 ```php
 // Create container
-$container = AutoWiring::the(new Container);
+$container = AutoWiring::the(new DependencyContainer);
 
 $foo = $container->get(Foo::class);
 ```
@@ -74,7 +74,7 @@ $foo = $container->get(Foo::class);
 You can construct services that use other services by passing the DI container in your anonymous function.
 
 ```php
-$container = new Container();
+$container = new DependencyContainer();
 
 $container->set('collaborator', function () {
     return new Collaborator();
@@ -99,7 +99,7 @@ $dsn = 'mysql:host=localhost;dbname=testdb';
 $username = 'admin';
 $password = 'secret';
 
-$container = new Container();
+$container = new DependencyContainer();
 $container->set('database', function () use ($dsn, $username, $password) {
     return new DatabaseConnection($dsn, $username, $password);
 });

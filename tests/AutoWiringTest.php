@@ -7,8 +7,8 @@ namespace Stratadox\Di\Test;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\AutoWiring;
+use Stratadox\Di\DependencyContainer;
 use Stratadox\Di\Container;
-use Stratadox\Di\ContainerInterface;
 use Stratadox\Di\Test\Stub\AnotherFoo;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
@@ -27,7 +27,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function loading_a_service_without_explicitly_adding_it()
     {
-        $container = AutoWiring::the(new Container);
+        $container = AutoWiring::the(new DependencyContainer);
 
         $this->assertInstanceOf(Foo::class, $container->get(Foo::class));
     }
@@ -35,7 +35,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function adding_the_auto_wired_service_to_the_container()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $autoWiring = AutoWiring::the($container);
 
         $foo = $autoWiring->get(Foo::class);
@@ -46,7 +46,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function adding_the_dependency_to_the_container_when_getting_the_service()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $autoWiring = AutoWiring::the($container);
 
         $autoWiring->get(Baz::class);
@@ -56,7 +56,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function using_the_service_from_the_underlying_container()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $container->set(Foo::class, function () {
             return new Foo;
         });
@@ -70,7 +70,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function retrieving_the_linked_implementation_of_an_interface()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $autoWiring = AutoWiring::the($container)
             ->link(BarInterface::class, Bar::class);
 
@@ -84,7 +84,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function retrieving_a_service_that_depends_on_two_interfaces()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $autoWiring = AutoWiring::the($container)
              ->link(FooInterface::class, Foo::class)
              ->link(BarInterface::class, Bar::class);
@@ -98,7 +98,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function overwriting_an_interface_link()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $autoWiring = AutoWiring::the($container)
             ->link(FooInterface::class, Foo::class)
             ->link(BarInterface::class, Bar::class)
@@ -113,7 +113,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function using_the_container_service_if_available()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $container->set(Qux::class, function () {
             return new Qux('foo');
         });
@@ -130,7 +130,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function redirecting_set_calls_to_the_container()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $autoWiring = AutoWiring::the($container);
         $autoWiring->set(Qux::class, function () {
             return new Qux('foo');
@@ -143,7 +143,7 @@ class AutoWiringTest extends TestCase
     /** @test */
     function redirecting_forget_calls_to_the_container()
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $container->set(Qux::class, function () {
             return new Qux('foo');
         });
@@ -161,7 +161,7 @@ class AutoWiringTest extends TestCase
      */
     function having_existing_classes(string $class)
     {
-        $this->assertTrue(AutoWiring::the(new Container)->has($class));
+        $this->assertTrue(AutoWiring::the(new DependencyContainer)->has($class));
     }
 
     /**
@@ -171,7 +171,7 @@ class AutoWiringTest extends TestCase
      */
     function not_having_non_existing_classes(string $notAClass)
     {
-        $this->assertFalse(AutoWiring::the(new Container)->has($notAClass));
+        $this->assertFalse(AutoWiring::the(new DependencyContainer)->has($notAClass));
     }
 
     /**
@@ -181,7 +181,7 @@ class AutoWiringTest extends TestCase
      */
     function not_having_existing_but_unlinked_interfaces(string $interface)
     {
-        $this->assertFalse(AutoWiring::the(new Container)->has($interface));
+        $this->assertFalse(AutoWiring::the(new DependencyContainer)->has($interface));
     }
 
     /**
@@ -192,7 +192,7 @@ class AutoWiringTest extends TestCase
      */
     function having_linked_interfaces(string $interface, string $implementation)
     {
-        $container = AutoWiring::the(new Container)
+        $container = AutoWiring::the(new DependencyContainer)
             ->link($interface, $implementation);
 
         $this->assertTrue($container->has($interface));
@@ -205,7 +205,7 @@ class AutoWiringTest extends TestCase
      */
     function not_having_non_existing_interfaces(string $notAnInterface)
     {
-        $this->assertFalse(AutoWiring::the(new Container)->has($notAnInterface));
+        $this->assertFalse(AutoWiring::the(new DependencyContainer)->has($notAnInterface));
     }
 
     /**
@@ -215,7 +215,7 @@ class AutoWiringTest extends TestCase
      */
     function always_having_whatever_the_container_has(string $notAnInterface)
     {
-        $container = new Container;
+        $container = new DependencyContainer;
         $container->set($notAnInterface, function () { return "That's ok."; });
         $this->assertTrue(AutoWiring::the($container)->has($notAnInterface));
     }
@@ -236,7 +236,7 @@ class AutoWiringTest extends TestCase
         return [
             'BarInterface' => [BarInterface::class],
             'FooInterface' => [FooInterface::class],
-            'ContainerInterface' => [ContainerInterface::class],
+            'ContainerInterface' => [Container::class],
         ];
     }
 
@@ -262,7 +262,7 @@ class AutoWiringTest extends TestCase
         return [
             'Not BarInterface' => [BarInterface::class.'ButNotReally'],
             'Not FooInterface' => [FooInterface::class.'ButNotReally'],
-            'Not ContainerInterface' => [ContainerInterface::class.'ButNotReally'],
+            'Not ContainerInterface' => [Container::class.'ButNotReally'],
         ];
     }
 }

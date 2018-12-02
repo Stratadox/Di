@@ -8,23 +8,23 @@ use ReflectionClass as Reflected;
 use ReflectionException;
 use ReflectionType;
 
-final class AutoWiring implements LinkableContainerInterface
+final class AutoWiring implements LinkableContainer
 {
     private $container;
     private $links;
 
-    private function __construct(ContainerInterface $container, array $links)
+    private function __construct(Container $container, array $links)
     {
         $this->container = $container;
         $this->links = $links;
     }
 
-    public static function the(ContainerInterface $container): LinkableContainerInterface
+    public static function the(Container $container): LinkableContainer
     {
         return new self($container, []);
     }
 
-    public function link(string $interface, string $class): LinkableContainerInterface
+    public function link(string $interface, string $class): LinkableContainer
     {
         if (!is_a($class, $interface, true)) {
             throw InvalidServiceType::serviceIsNotOfType($class, $interface);

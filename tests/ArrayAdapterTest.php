@@ -6,7 +6,7 @@ namespace Stratadox\Di\Test;
 
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\ArrayAdapter;
-use Stratadox\Di\Container;
+use Stratadox\Di\DependencyContainer;
 use Stratadox\Di\Test\Stub\Foo;
 
 /**
@@ -17,7 +17,7 @@ class ArrayAdapterTest extends TestCase
     /** @test */
     function looking_up_a_service_through_the_container()
     {
-        $container = new Container();
+        $container = new DependencyContainer();
         $container->set('foo', function () {
             return new Foo();
         });
@@ -30,7 +30,7 @@ class ArrayAdapterTest extends TestCase
     /** @test */
     function registering_a_service_to_the_container()
     {
-        $container = new Container();
+        $container = new DependencyContainer();
 
         $di = new ArrayAdapter($container);
         $di['foo'] = function () {
@@ -45,7 +45,7 @@ class ArrayAdapterTest extends TestCase
     /** @test */
     function making_the_container_forget_a_service()
     {
-        $container = new Container();
+        $container = new DependencyContainer();
         $container->set('foo', function () {
             return new Foo();
         });
@@ -60,7 +60,7 @@ class ArrayAdapterTest extends TestCase
     /** @test */
     function indicating_that_a_service_exists_in_the_container()
     {
-        $container = new Container();
+        $container = new DependencyContainer();
         $container->set('foo', function () {
             return new Foo();
         });
@@ -74,7 +74,7 @@ class ArrayAdapterTest extends TestCase
     /** @test */
     function indicating_that_a_service_does_not_exist_in_the_container()
     {
-        $di = new ArrayAdapter(new Container());
+        $di = new ArrayAdapter(new DependencyContainer());
 
         $this->assertFalse(isset($di['foo']));
         $this->assertArrayNotHasKey('foo', $di);

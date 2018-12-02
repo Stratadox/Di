@@ -6,7 +6,7 @@ namespace Stratadox\Di\Test;
 
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\AutoWiring;
-use Stratadox\Di\Container;
+use Stratadox\Di\DependencyContainer;
 use Stratadox\Di\InvalidServiceType;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\FooInterface;
@@ -24,7 +24,7 @@ class InvalidServiceTypeTest extends TestCase
         $this->expectExceptionMessage(
             'Service '.Bar::class.' is not of type '.FooInterface::class
         );
-        AutoWiring::the(new Container)
+        AutoWiring::the(new DependencyContainer)
             ->link(FooInterface::class, Bar::class);
     }
 }

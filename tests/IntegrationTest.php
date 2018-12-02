@@ -7,7 +7,7 @@ namespace Stratadox\Di\Test;
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\ArrayAdapter;
 use Stratadox\Di\AutoWiring;
-use Stratadox\Di\Container;
+use Stratadox\Di\DependencyContainer;
 use Stratadox\Di\Test\Stub\Baz;
 use Stratadox\Di\Test\Stub\Foo;
 
@@ -19,7 +19,7 @@ class IntegrationTest extends TestCase
     /** @test */
     function autowiring_array_syntax_container()
     {
-        $container = new ArrayAdapter(AutoWiring::the(new Container));
+        $container = new ArrayAdapter(AutoWiring::the(new DependencyContainer));
 
         $this->assertInstanceOf(Baz::class, $container[Baz::class]);
     }
@@ -27,7 +27,7 @@ class IntegrationTest extends TestCase
     /** @test */
     function dependencies_are_put_in_the_container()
     {
-        $original = new Container;
+        $original = new DependencyContainer;
         $container = new ArrayAdapter(AutoWiring::the($original));
 
         $container[Baz::class]; // Magic

@@ -6,7 +6,7 @@ namespace Stratadox\Di\Test;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Stratadox\Di\Container;
+use Stratadox\Di\DependencyContainer;
 use Stratadox\Di\Test\Stub\Bar;
 use Stratadox\Di\Test\Stub\BarInterface;
 use Stratadox\Di\Test\Stub\Baz;
@@ -14,14 +14,14 @@ use Stratadox\Di\Test\Stub\Foo;
 use Throwable;
 
 /**
- * @covers \Stratadox\Di\Container
+ * @covers \Stratadox\Di\DependencyContainer
  */
 class ContainerTest extends TestCase
 {
     /** @test */
     function indicating_that_a_service_is_known()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('foo', function () {
             return new Foo();
         });
@@ -32,14 +32,14 @@ class ContainerTest extends TestCase
     /** @test */
     function indicating_that_a_service_is_not_known()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $this->assertFalse($di->has('foo'));
     }
 
     /** @test */
     function looking_up_a_registered_service()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('foo', function () {
             return new Foo();
         });
@@ -52,7 +52,7 @@ class ContainerTest extends TestCase
     /** @test */
     function looking_up_multiple_registered_services()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('foo', function () {
             return new Foo();
         });
@@ -67,7 +67,7 @@ class ContainerTest extends TestCase
     /** @test */
     function overriding_a_previously_registered_service()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('foo', function () {
             return new Bar();
         });
@@ -81,7 +81,7 @@ class ContainerTest extends TestCase
     /** @test */
     function composing_services_through_the_container()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('baz', function () use ($di) {
             return new Baz($di->get('foo'));
         });
@@ -95,7 +95,7 @@ class ContainerTest extends TestCase
     /** @test */
     function caching_composite_services()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('baz', function () use ($di) {
             return new Baz($di->get('foo'));
         });
@@ -119,7 +119,7 @@ class ContainerTest extends TestCase
     /** @test */
     function caching_the_instances_for_future_use()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('bar', function () {
             return new Bar();
         });
@@ -133,7 +133,7 @@ class ContainerTest extends TestCase
     /** @test */
     function not_caching_the_instances_that_have_caching_disabled()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('bar', function () {
             return new Bar();
         }, false);
@@ -147,7 +147,7 @@ class ContainerTest extends TestCase
     /** @test */
     function indicating_that_a_forgotten_service_does_not_exist_anymore()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('foo', function () {
             return new Foo();
         });
@@ -162,7 +162,7 @@ class ContainerTest extends TestCase
     /** @test */
     function factories_that_forget_themselves_produce_once_and_quit_forever()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('foo', function () use ($di) {
             $di->forget('foo');
             return 'Bye!';
@@ -175,7 +175,7 @@ class ContainerTest extends TestCase
     /** @test */
     function allowing_a_factory_to_produce_the_container_it_is_in()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('di', function () use ($di) {
             return $di;
         });
@@ -185,7 +185,7 @@ class ContainerTest extends TestCase
     /** @test */
     function recovering_into_a_workable_state_after_encountering_an_exception()
     {
-        $di = new Container();
+        $di = new DependencyContainer();
         $di->set('foo', function () {
             throw new Exception();
         });

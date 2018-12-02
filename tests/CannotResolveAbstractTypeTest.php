@@ -7,7 +7,7 @@ namespace Stratadox\Di\Test;
 use PHPUnit\Framework\TestCase;
 use Stratadox\Di\AutoWiring;
 use Stratadox\Di\CannotResolveAbstractType;
-use Stratadox\Di\Container;
+use Stratadox\Di\DependencyContainer;
 use Stratadox\Di\Test\Stub\AbstractFoo;
 use Stratadox\Di\Test\Stub\FooInterface;
 
@@ -20,7 +20,7 @@ class CannotResolveAbstractTypeTest extends TestCase
     /** @test */
     function throwing_an_exception_when_autowiring_an_unlinked_interface()
     {
-        $container = AutoWiring::the(new Container);
+        $container = AutoWiring::the(new DependencyContainer);
 
         $this->expectException(CannotResolveAbstractType::class);
         $this->expectExceptionMessage(
@@ -34,7 +34,7 @@ class CannotResolveAbstractTypeTest extends TestCase
     /** @test */
     function throwing_an_exception_when_autowiring_an_unlinked_abstract_class()
     {
-        $container = AutoWiring::the(new Container);
+        $container = AutoWiring::the(new DependencyContainer);
 
         $this->expectException(CannotResolveAbstractType::class);
         $this->expectExceptionMessage(

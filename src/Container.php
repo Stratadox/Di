@@ -1,79 +1,51 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Stratadox\Di;
 
 use Closure;
-use Throwable;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Psr\Container\NotFoundExceptionInterface as NotFound;
 
-final class Container implements ContainerInterface
+interface Container extends PsrContainerInterface
 {
-    private $remember = [];
-    private $factoryFor = [];
-    private $mustReload = [];
-    private $isCurrentlyResolving = [];
+    /**
+     * Register a service to the container.
+     *
+     * @param string $service   The name of the service to register
+     * @param Closure $factory  The function that produces the service
+     * @param bool $cache       Whether or nor to cache the service
+     *
+     * @return void
+     */
+    public function set(string $service, Closure $factory, bool $cache = true): void;
 
-    public function get($theService)
-    {
-        $this->mustKnowAbout($theService);
-        if ($this->mustReload[$theService] || $this->hasNotYetLoaded($theService)) {
-            $this->remember[$theService] = $this->load($theService);
-        }
-        return $this->remember[$theService];
-    }
+    /**
+     * Retrieve a service from the container.
+     *
+     * @param string $service   The name of the service to retrieve
+     *
+     * @return mixed            The service object
+     *
+     * @throws InvalidServiceDefinition
+     * @throws NotFound
+     */
+    public function get($service);
 
-    public function has($theService): bool
-    {
-        return isset($this->factoryFor[$theService]);
-    }
+    /**
+     * Check whether a service is registered.
+     *
+     * @param string $service   The name of the service to check for
+     *
+     * @return boolean          Whether or not the service exists
+     */
+    public function has($service): bool;
 
-    public function set(
-        string $theService,
-        Closure $producingTheService,
-        bool $cache = true
-    ): void {
-        $this->remember[$theService] = null;
-        $this->factoryFor[$theService] = $producingTheService;
-        $this->mustReload[$theService] = !$cache;
-    }
-
-    public function forget(string $theService): void
-    {
-        unset(
-            $this->remember[$theService],
-            $this->factoryFor[$theService],
-            $this->mustReload[$theService]
-        );
-    }
-
-    /** @throws InvalidServiceDefinition */
-    private function load(string $theService)
-    {
-        if (isset($this->isCurrentlyResolving[$theService])) {
-            throw DependenciesCannotBeCircular::loopDetectedIn($theService);
-        }
-        $this->isCurrentlyResolving[$theService] = true;
-        $makeTheService = $this->factoryFor[$theService];
-        try {
-            return $makeTheService();
-        } catch (Throwable $encounteredException) {
-            throw InvalidFactory::threwException($theService, $encounteredException);
-        } finally {
-            unset($this->isCurrentlyResolving[$theService]);
-        }
-    }
-
-    private function hasNotYetLoaded(string $theService): bool
-    {
-        return !isset($this->remember[$theService]);
-    }
-
-    /** @throws NotFound */
-    private function mustKnowAbout(string $theService): void
-    {
-        if ($this->has($theService)) {
-            return;
-        }
-        throw ServiceNotFound::noServiceNamed($theService);
-    }
+    /**
+     * Remove a service from the container.
+     *
+     * @param string $service   The name of the service to remove
+     *
+     * @return void
+     */
+    public function forget(string $service): void;
 }

@@ -11,9 +11,9 @@ final class ArrayAdapter implements ArrayAccess
     private $container;
 
     /**
-     * @param ContainerInterface $container
+     * @param Container $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
