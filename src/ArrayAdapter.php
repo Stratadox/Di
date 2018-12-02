@@ -4,6 +4,7 @@ namespace Stratadox\Di;
 
 use ArrayAccess;
 use Closure;
+use Psr\Container\NotFoundExceptionInterface as NotFound;
 
 final class ArrayAdapter implements ArrayAccess
 {
@@ -30,7 +31,7 @@ final class ArrayAdapter implements ArrayAccess
      * @param string $offset
      * @return mixed
      * @throws InvalidServiceDefinition
-     * @throws ServiceNotFound
+     * @throws NotFound
      */
     public function offsetGet($offset)
     {
