@@ -1,32 +1,28 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Stratadox\Di;
 
 use Closure;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Throwable;
+use Psr\Container\NotFoundExceptionInterface as NotFound;
 
-final class Container implements ContainerInterface, PsrContainerInterface
+final class Container implements ContainerInterface
 {
-    protected $remember = [];
-    protected $factoryFor = [];
-    protected $mustReload = [];
-    protected $isCurrentlyResolving = [];
+    private $remember = [];
+    private $factoryFor = [];
+    private $mustReload = [];
+    private $isCurrentlyResolving = [];
 
     public function get($theService)
     {
         $this->mustKnowAbout($theService);
-
-        if ($this->hasNotYetLoaded($theService) or $this->mustReload[$theService]) {
+        if ($this->mustReload[$theService] || $this->hasNotYetLoaded($theService)) {
             $this->remember[$theService] = $this->load($theService);
         }
-
         return $this->remember[$theService];
     }
 
-    public function has($theService) : bool
+    public function has($theService): bool
     {
         return isset($this->factoryFor[$theService]);
     }
@@ -35,18 +31,19 @@ final class Container implements ContainerInterface, PsrContainerInterface
         string $theService,
         Closure $producingTheService,
         bool $cache = true
-    ) : void
-    {
+    ): void {
         $this->remember[$theService] = null;
         $this->factoryFor[$theService] = $producingTheService;
         $this->mustReload[$theService] = !$cache;
     }
 
-    public function forget(string $theService) : void
+    public function forget(string $theService): void
     {
-        unset($this->remember[$theService]);
-        unset($this->factoryFor[$theService]);
-        unset($this->mustReload[$theService]);
+        unset(
+            $this->remember[$theService],
+            $this->factoryFor[$theService],
+            $this->mustReload[$theService]
+        );
     }
 
     /** @throws InvalidServiceDefinition */
@@ -56,7 +53,6 @@ final class Container implements ContainerInterface, PsrContainerInterface
             throw DependenciesCannotBeCircular::loopDetectedIn($theService);
         }
         $this->isCurrentlyResolving[$theService] = true;
-
         $makeTheService = $this->factoryFor[$theService];
         try {
             return $makeTheService();
@@ -67,15 +63,17 @@ final class Container implements ContainerInterface, PsrContainerInterface
         }
     }
 
-    private function hasNotYetLoaded(string $theService) : bool
+    private function hasNotYetLoaded(string $theService): bool
     {
         return !isset($this->remember[$theService]);
     }
 
-    /** @throws ServiceNotFound */
-    private function mustKnowAbout(string $theService) : void
+    /** @throws NotFound */
+    private function mustKnowAbout(string $theService): void
     {
-        if ($this->has($theService)) return;
+        if ($this->has($theService)) {
+            return;
+        }
         throw ServiceNotFound::noServiceNamed($theService);
     }
 }

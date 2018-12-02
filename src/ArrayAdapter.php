@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Stratadox\Di;
 
@@ -9,7 +7,7 @@ use Closure;
 
 final class ArrayAdapter implements ArrayAccess
 {
-    protected $container;
+    private $container;
 
     /**
      * @param ContainerInterface $container
@@ -23,7 +21,7 @@ final class ArrayAdapter implements ArrayAccess
      * @param string $offset
      * @return bool
      */
-    public function offsetExists($offset) : bool
+    public function offsetExists($offset): bool
     {
         return $this->container->has($offset);
     }
@@ -43,7 +41,7 @@ final class ArrayAdapter implements ArrayAccess
      * @param string $offset
      * @param Closure $value
      */
-    public function offsetSet($offset, $value) : void
+    public function offsetSet($offset, $value): void
     {
         $this->container->set($offset, $value);
     }
@@ -51,7 +49,7 @@ final class ArrayAdapter implements ArrayAccess
     /**
      * @param string $offset
      */
-    public function offsetUnset($offset) : void
+    public function offsetUnset($offset): void
     {
         $this->container->forget($offset);
     }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Stratadox\Di;
 
@@ -12,8 +10,7 @@ final class InvalidServiceType extends RuntimeException implements InvalidServic
     public static function serviceIsNotOfType(
         string $serviceName,
         string $expectedType
-    ) : InvalidServiceDefinition
-    {
+    ): InvalidServiceDefinition {
         return new static(sprintf(
             'Service %s is not of type %s',
             $serviceName,

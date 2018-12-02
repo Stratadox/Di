@@ -1,16 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Stratadox\Di;
 
 use Closure;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
 use ReflectionClass as Reflected;
 use ReflectionException;
 use ReflectionType;
 
-final class AutoWiring implements ContainerInterface, PsrContainerInterface
+final class AutoWiring implements ContainerInterface
 {
     private $container;
     private $links;
@@ -21,12 +18,12 @@ final class AutoWiring implements ContainerInterface, PsrContainerInterface
         $this->links = $links;
     }
 
-    public static function the(ContainerInterface $container) : self
+    public static function the(ContainerInterface $container): ContainerInterface
     {
         return new self($container, []);
     }
 
-    public function link(string $interface, string $class) : self
+    public function link(string $interface, string $class) : ContainerInterface
     {
         if (!is_a($class, $interface, true)) {
             throw InvalidServiceType::serviceIsNotOfType($class, $interface);
@@ -42,24 +39,24 @@ final class AutoWiring implements ContainerInterface, PsrContainerInterface
         return $this->container->get($theService);
     }
 
-    public function has($theService) : bool
+    public function has($theService): bool
     {
         return class_exists($theService)
             || isset($this->links[$theService])
             || $this->container->has($theService);
     }
 
-    public function set(string $service, Closure $factory, bool $cache = true)
+    public function set(string $service, Closure $factory, bool $cache = true): void
     {
         $this->container->set($service, $factory, $cache);
     }
 
-    public function forget(string $service)
+    public function forget(string $service): void
     {
         $this->container->forget($service);
     }
 
-    private function resolve(string $service)
+    private function resolve(string $service): void
     {
         try {
             $this->resolveThe(new Reflected($service));
@@ -68,7 +65,7 @@ final class AutoWiring implements ContainerInterface, PsrContainerInterface
         }
     }
 
-    private function resolveThe(Reflected $service)
+    private function resolveThe(Reflected $service): void
     {
         if ($service->isAbstract() || $service->isInterface()) {
             $this->resolveAbstract($service);
@@ -77,7 +74,7 @@ final class AutoWiring implements ContainerInterface, PsrContainerInterface
         }
     }
 
-    private function resolveAbstract(Reflected $service) : void
+    private function resolveAbstract(Reflected $service): void
     {
         $name = $service->getName();
         if (!isset($this->links[$name])) {
@@ -90,7 +87,7 @@ final class AutoWiring implements ContainerInterface, PsrContainerInterface
         });
     }
 
-    private function resolveClass(Reflected $service) : void
+    private function resolveClass(Reflected $service): void
     {
         $name = $service->getName();
         $constructor = $service->getConstructor();
@@ -110,7 +107,7 @@ final class AutoWiring implements ContainerInterface, PsrContainerInterface
         });
     }
 
-    private function handleDependency(ReflectionType $theType) : string
+    private function handleDependency(ReflectionType $theType): string
     {
         if ($theType->isBuiltin()) {
             throw CannotAutoWireBuiltInTypes::cannotResolve($theType);

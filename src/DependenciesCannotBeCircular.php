@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Stratadox\Di;
 
@@ -9,7 +7,7 @@ use function sprintf;
 
 final class DependenciesCannotBeCircular extends RuntimeException implements InvalidServiceDefinition
 {
-    public static function loopDetectedIn($serviceName) : DependenciesCannotBeCircular
+    public static function loopDetectedIn($serviceName): DependenciesCannotBeCircular
     {
         return new static(sprintf(
             'Circular dependency loop detected in factory `%s`.',

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Stratadox\Di;
 
@@ -13,8 +11,7 @@ final class InvalidFactory extends RuntimeException implements InvalidServiceDef
     public static function threwException(
         string $serviceName,
         Throwable $exception
-    ) : Throwable
-    {
+    ): InvalidServiceDefinition {
         return new static(sprintf(
             'Service `%s` was configured incorrectly and could not be created: %s',
             $serviceName,

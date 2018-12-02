@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Stratadox\Di;
 
@@ -9,7 +7,7 @@ use ReflectionType;
 
 final class CannotAutoWireBuiltInTypes extends InvalidArgument implements InvalidServiceDefinition
 {
-    public static function cannotResolve(ReflectionType $type)
+    public static function cannotResolve(ReflectionType $type): InvalidServiceDefinition
     {
         return new self(sprintf(
             'Cannot autowire the %s argument.',

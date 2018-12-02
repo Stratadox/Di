@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Stratadox\Di;
 
 use Closure;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 
-interface ContainerInterface
+interface ContainerInterface extends PsrContainerInterface
 {
     /**
      * Register a service to the container.
@@ -17,7 +16,7 @@ interface ContainerInterface
      *
      * @return void
      */
-    public function set(string $service, Closure $factory, bool $cache = true);
+    public function set(string $service, Closure $factory, bool $cache = true): void;
 
     /**
      * Retrieve a service from the container.
@@ -38,7 +37,7 @@ interface ContainerInterface
      *
      * @return boolean          Whether or not the service exists
      */
-    public function has($service) : bool;
+    public function has($service): bool;
 
     /**
      * Remove a service from the container.
@@ -47,5 +46,5 @@ interface ContainerInterface
      *
      * @return void
      */
-    public function forget(string $service);
+    public function forget(string $service): void;
 }
