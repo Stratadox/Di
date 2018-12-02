@@ -155,7 +155,7 @@ class AutoWiringTest extends TestCase
     }
 
     /**
-     * @scenario
+     * @test
      * @dataProvider classes
      * @param string $class The class to check.
      */
@@ -165,7 +165,7 @@ class AutoWiringTest extends TestCase
     }
 
     /**
-     * @scenario
+     * @test
      * @dataProvider notClasses
      * @param string $notAClass The class to check.
      */
@@ -175,7 +175,7 @@ class AutoWiringTest extends TestCase
     }
 
     /**
-     * @scenario
+     * @test
      * @dataProvider interfaces
      * @param string $interface The interface to check.
      */
@@ -185,7 +185,7 @@ class AutoWiringTest extends TestCase
     }
 
     /**
-     * @scenario
+     * @test
      * @dataProvider interfacesAndClasses
      * @param string $interface      The interface to check.
      * @param string $implementation The implementation to link.
@@ -199,7 +199,7 @@ class AutoWiringTest extends TestCase
     }
 
     /**
-     * @scenario
+     * @test
      * @dataProvider notInterfaces
      * @param string $notAnInterface The interface to check.
      */
@@ -209,7 +209,7 @@ class AutoWiringTest extends TestCase
     }
 
     /**
-     * @scenario
+     * @test
      * @dataProvider notInterfaces
      * @param string $notAnInterface The interface to check.
      */
