@@ -4,6 +4,7 @@ namespace Stratadox\Di;
 
 use Closure;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\NotFoundExceptionInterface as NotFound;
 
 interface ContainerInterface extends PsrContainerInterface
 {
@@ -26,7 +27,7 @@ interface ContainerInterface extends PsrContainerInterface
      * @return mixed            The service object
      *
      * @throws InvalidServiceDefinition
-     * @throws ServiceNotFound
+     * @throws NotFound
      */
     public function get($service);
 

@@ -3,11 +3,12 @@
 namespace Stratadox\Di;
 
 use Closure;
+use Psr\Container\NotFoundExceptionInterface as NotFound;
 use ReflectionClass as Reflected;
 use ReflectionException;
 use ReflectionType;
 
-final class AutoWiring implements ContainerInterface
+final class AutoWiring implements LinkableContainerInterface
 {
     private $container;
     private $links;
@@ -18,12 +19,12 @@ final class AutoWiring implements ContainerInterface
         $this->links = $links;
     }
 
-    public static function the(ContainerInterface $container): ContainerInterface
+    public static function the(ContainerInterface $container): LinkableContainerInterface
     {
         return new self($container, []);
     }
 
-    public function link(string $interface, string $class) : ContainerInterface
+    public function link(string $interface, string $class): LinkableContainerInterface
     {
         if (!is_a($class, $interface, true)) {
             throw InvalidServiceType::serviceIsNotOfType($class, $interface);
@@ -56,6 +57,7 @@ final class AutoWiring implements ContainerInterface
         $this->container->forget($service);
     }
 
+    /** @throws InvalidServiceDefinition|NotFound */
     private function resolve(string $service): void
     {
         try {
@@ -65,6 +67,7 @@ final class AutoWiring implements ContainerInterface
         }
     }
 
+    /** @throws InvalidServiceDefinition|ReflectionException */
     private function resolveThe(Reflected $service): void
     {
         if ($service->isAbstract() || $service->isInterface()) {
@@ -74,6 +77,7 @@ final class AutoWiring implements ContainerInterface
         }
     }
 
+    /** @throws InvalidServiceDefinition|ReflectionException */
     private function resolveAbstract(Reflected $service): void
     {
         $name = $service->getName();
@@ -87,6 +91,7 @@ final class AutoWiring implements ContainerInterface
         });
     }
 
+    /** @throws InvalidServiceDefinition */
     private function resolveClass(Reflected $service): void
     {
         $name = $service->getName();
@@ -107,6 +112,7 @@ final class AutoWiring implements ContainerInterface
         });
     }
 
+    /** @throws InvalidServiceDefinition */
     private function handleDependency(ReflectionType $theType): string
     {
         if ($theType->isBuiltin()) {

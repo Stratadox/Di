@@ -7,7 +7,7 @@ use function sprintf;
 
 final class DependenciesCannotBeCircular extends RuntimeException implements InvalidServiceDefinition
 {
-    public static function loopDetectedIn($serviceName): DependenciesCannotBeCircular
+    public static function loopDetectedIn($serviceName): InvalidServiceDefinition
     {
         return new static(sprintf(
             'Circular dependency loop detected in factory `%s`.',
